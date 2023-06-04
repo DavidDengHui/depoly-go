@@ -4,7 +4,7 @@
   publish = "static"
 
 [build.environment]
-  GO_IMPORT_PATH = "github.com/surzia/go-netlify-app"
+  GO_IMPORT_PATH = "github.com/DavidDengHui/depoly-go"
   GO111MODULE = "on"
 
 [[redirects]]
