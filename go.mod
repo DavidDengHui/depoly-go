@@ -1,4 +1,4 @@
-module github.com/surzia/go-netlify-app
+module github.com/DavidDengHui/depoly-go
 
 go 1.18
 
