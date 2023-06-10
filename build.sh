@@ -1,6 +1,6 @@
 set -euxo pipefail
 
-mkdir -p functions
-GOBIN=functions go install ./...
-chmod +x functions/*
+mkdir -p "$(pwd)/functions"
+GOBIN=$(pwd)/functions go install ./...
+chmod +x "$(pwd)"/functions/*
 go env
