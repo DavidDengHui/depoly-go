@@ -1,6 +1,6 @@
 build:
-	mkdir -p "$(pwd)/functions"
-	GOBIN=$(pwd)/functions go install ./...
+	mkdir -p functions
+	GOBIN=functions go install ./...
 	go build -o functions/hello-lambda ./...
-	chmod +x "$(pwd)"/functions/*
+	chmod +x functions/*
 	go env
