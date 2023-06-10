@@ -60,7 +60,7 @@ func feed(w http.ResponseWriter, r *http.Request) {
 	w.Write(body)
 }
 
-func feed(w http.ResponseWriter, r *http.Request) {
+func bili(w http.ResponseWriter, r *http.Request) {
 	url := "https://api.bilibili.com/x/web-interface/popular?ps=20&pn=1"
 	method := "GET"
 
