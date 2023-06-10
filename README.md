@@ -1,7 +1,25 @@
-# Deploying AWS Lambda Go functions with Netlify
+# README
+![](static/logo.jpeg)
 
-This is an example of how to deploy Go functions with Netlify on AWS Lambda.
+Host a simple Go web application in Netlify
 
-You can find the code in [main.go](main.go).
+**Live Preview**
 
-Read more about Go functions support on Netlify in [our documentation](https://www.netlify.com/docs/lambda-functions).
+[![Netlify Status](https://api.netlify.com/api/v1/badges/575f6c75-113a-4512-879b-2dd4f888547f/deploy-status)](https://app.netlify.com/sites/go-netlify-app/deploys)
+
+## Write a function
+
+The [Netlify docs](https://docs.netlify.com/functions/build-with-go/) for golang are a great starting point.
+
+## Build the binary
+Push code to GitHub and instruct the Netlify CI on how to use the source code to build.
+
+## Deploy to Netlify
+Configure the settings in a `netlify.toml` file in the root of project.
+
+```toml
+[build]
+  command = "${build command}"
+  functions = "functions"
+  publish = "${static html file}"
+```

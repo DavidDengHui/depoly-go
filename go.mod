@@ -1,20 +1,10 @@
-module github.com/DavidDengHui/depoly-go
+module github.com/surzia/go-netlify-app
 
-go 1.17
+go 1.18
 
-require (
-	github.com/carlmjohnson/feed2json v0.0.7
-	github.com/carlmjohnson/gateway v1.20.7
-)
+require github.com/apex/gateway v1.1.2
 
 require (
-	github.com/PuerkitoBio/goquery v1.5.0 // indirect
-	github.com/andybalholm/cascadia v1.0.0 // indirect
-	github.com/aws/aws-lambda-go v1.13.2 // indirect
-	github.com/gorilla/feeds v1.1.0 // indirect
-	github.com/mmcdole/gofeed v1.0.0-beta2 // indirect
-	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
-	github.com/tj/assert v0.0.0-20190920132354-ee03d75cd160 // indirect
-	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	github.com/aws/aws-lambda-go v1.17.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 )

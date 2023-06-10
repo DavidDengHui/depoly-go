@@ -1,6 +1,0 @@
-build:
-	mkdir -p functions
-	GOBIN=functions go install ./...
-	go build -o functions/hello-lambda ./...
-	chmod +x functions/*
-	go env
