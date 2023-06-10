@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>数据发送器</title>
+    <link rel="shortcut icon" href="https://hnest.eu.org/favicon.ico">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script>
+
+function addRow(elementId) {
+  var element = document.getElementById(elementId);
+  var div = document.createElement("div");
+  var input1 = document.createElement("input");
+  var input2 = document.createElement("input");
+  var span = document.createElement("span");
+  span.innerText = ":";
+  var button = document.createElement("button");
+  button.innerText = "-";
+  button.id = "del_button";
+  button.onclick = function() {
+    var parent = this.parentNode;
+    parent.remove();
+  };
+  input1.id = "input_key";
+  input2.id = "input_vaule";
+  input1.type = "text";
+  input2.type = "text";
+  input1.placeholder = "键名";
+  input2.placeholder = "键值";
+  input1.style.width = "100px";
+  input2.style.width = "100px";
+  input1.style.marginRight = "10px";
+  input2.style.marginRight = "10px";
+  span.style.marginRight = "10px";
+  div.appendChild(input1);
+  div.appendChild(span);
+  div.appendChild(input2);
+  div.appendChild(button);
+  element.appendChild(div);
+}
+
+function getJsonString(elementId) {
+  var element = document.getElementById(elementId);
+  var inputs = element.getElementsByTagName("input");
+  var obj = {};
+  for (var i = 0; i < inputs.length; i += 2) {
+    var key = inputs[i].value;
+    var value = inputs[i + 1].value;
+    if (key && value) {
+      obj[key] = value;
+    }
+  }
+  return JSON.stringify(obj);
+}
+
+function escapeString(str) {
+  return encodeURIComponent(str);
+}
+
+function generateLink() {
+  var url = document.getElementById("send_url").value;
+  var type = document.getElementById("send_type").value;
+  var header = getJsonString("send_header");
+  var data = getJsonString("send_data");
+  var selectButton = document.getElementById("selectButton");
+  var copyButton = document.getElementById("copyButton");
+  var hrefButton = document.getElementById("hrefButton");
+
+  url = escapeString(url);
+  header = escapeString(header);
+  data = escapeString(data);
+
+  var link = window.location.origin + "/send_api?url=" + url + "&type=" + type + "&header=" + header + "&data=" + data;
+
+  if (!url) {
+    document.getElementById("url-error").style.display = "inline-block";
+  } else {
+    document.getElementById("url-error").style.display = "none";
+  }
+  if (!type) {
+    document.getElementById("type-error").style.display = "inline-block";
+  } else {
+    document.getElementById("type-error").style.display = "none";
+  }
+
+  if (url && type) {
+    document.getElementById("outputSend").value = link;
+    selectButton.style.visibility = "visible";
+    copyButton.style.visibility = "visible";
+    hrefButton.style.visibility = "visible";
+  } else {
+    document.getElementById("outputSend").value = "";
+  }
+  var resetLinkButton = document.getElementById("resetButton");
+  resetLinkButton.style.visibility = "visible";
+}
+
+function resetCon() {
+  document.getElementById("send_url").value = "";
+  document.getElementById("url-error").style.display = "none";
+  document.getElementById("send_type").value = "";
+  document.getElementById("type-error").style.display = "none";
+  var del_buttons = document.querySelectorAll("#del_button");
+  for (var i = 0; i < del_buttons.length; i++) {
+    del_buttons[i].click();
+  }
+  var input_keys = document.querySelectorAll("#input_key");
+  for (var i = 0; i < input_keys.length; i++) {
+    input_keys[i].value = "";
+  }
+  var input_vaules = document.querySelectorAll("#input_vaule");
+  for (var i = 0; i < input_vaules.length; i++) {
+    input_vaules[i].value = "";
+  }
+  document.getElementById("outputSend").value = "";
+  resetButton.style.visibility = "hidden";
+  selectButton.style.visibility = "hidden";
+  copyButton.style.visibility = "hidden";
+  hrefButton.style.visibility = "hidden";
+}
+
+    </script>
+  </head>
+  <body>
+    <h1>数据发送器</h1>
+    <p>请输入要请求的<b>链接</b>：</p>
+    <input id="send_url" type="text" style="width: 300px;" placeholder="https://example.com/?a=1&b=2">
+    <span id="url-error" style="color: red; font-weight: bold; display: none;">*此项必填</span>
+    <p>请输入数据<b>请求方式</b>：</p>
+    <input id="send_type" type="text" style="width: 300px;" placeholder="GET or POST">
+    <span id="type-error" style="color: red; font-weight: bold; display: none;">*此项必填</span>
+    <p>请输入请求<b>标头</b>信息：</p>
+    <div id="send_header">
+      <div>
+        <input id="input_key" placeholder="键名" type="text" style="width: 100px; margin-right: 10px;">
+        <span>:</span>
+        <input id="input_vaule" placeholder="键值" type="text" style="width: 100px; margin-right: 10px; margin-left: 10px;">
+      </div>
+    </div>
+    <button onclick="addRow('send_header')">+</button>
+    <span>（点击+号可以增加行数）</span>
+    <p>请输入请求发送<b>数据</b>：</p>
+    <div id="send_data">
+      <div>
+        <input id="input_key" placeholder="键名" type="text" style="width: 100px; margin-right: 10px;">
+        <span>:</span>
+        <input id="input_vaule" placeholder="键值" type="text" style="width: 100px; margin-right: 10px; margin-left: 10px;">
+      </div>
+    </div>
+    <button onclick="addRow('send_data')">+</button>
+    <span>（点击+号可以增加行数）</span>
+    <p>
+      <button onclick="generateLink()">生成</button>
+      <button id="resetButton" onclick="resetCon()" style="visibility: hidden;">重置</button>
+    </p>
+    <p>生成的文本链接如下：
+      <button id="selectButton" onclick="document.getElementById('outputSend').select();" style="visibility: hidden;">全选</button>
+      <button id="copyButton" onclick="document.getElementById('selectButton').click();document.execCommand('copy');alert('链接已复制：\n'+document.getElementById('outputSend').value);" style="visibility: hidden;">复制</button>
+      <button id="hrefButton" onclick="window.open(document.getElementById('outputSend').value);" style="visibility: hidden;">访问</button>
+    </p>
+    <textarea placeholder="https://api.hnest.eu.org/send_api?url=&type=&header=&data=" id="outputSend" rows="5" cols="50"></textarea>
+    <br>
+    <br>
+    <br>
+    <button onclick="window.location.href='/readme'">←返回主页</button>
+  </body>
+</html>

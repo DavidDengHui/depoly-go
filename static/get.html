@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>盗链生成器</title>
+    <link rel="shortcut icon" href="https://hnest.eu.org/favicon.ico">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script>
+
+function escapeUrl(str) {
+  return encodeURIComponent(str);
+}
+
+function generateLink() {
+  var resetLinkButton = document.getElementById("resetLinkButton");
+  resetLinkButton.style.visibility = "visible";
+  var selectButton = document.getElementById("selectButton");
+  var copyButton = document.getElementById("copyButton");
+  var hrefButton = document.getElementById("hrefButton");
+  var inputURL = document.getElementById("inputURL").value;
+  if (!inputURL) {
+    document.getElementById("url-error").style.display = "inline-block";
+    return;
+  } else {
+    document.getElementById("url-error").style.display = "none";
+  }
+  document.getElementById("img-tips").style.display = "none";
+  selectButton.style.visibility = "visible";
+  copyButton.style.visibility = "visible";
+  hrefButton.style.visibility = "visible";
+  var escaped = escapeUrl(inputURL);
+  var newLink = window.location.origin + "/get_api?url=" + escaped;
+  var outputURL = document.getElementById("outputURL");
+  outputURL.value = newLink;
+}
+
+function generateImg() {
+  var resetLinkButton = document.getElementById("resetLinkButton");
+  resetLinkButton.style.visibility = "visible";
+  var selectButton = document.getElementById("selectButton");
+  var copyButton = document.getElementById("copyButton");
+  var hrefButton = document.getElementById("hrefButton");
+  var inputURL = document.getElementById("inputURL").value;
+  if (!inputURL) {
+    document.getElementById("url-error").style.display = "inline-block";
+    document.getElementById("img-tips").style.display = "none";
+    return;
+  } else {
+    document.getElementById("url-error").style.display = "none";
+    document.getElementById("img-tips").style.display = "inline-block";
+  }
+  selectButton.style.visibility = "visible";
+  copyButton.style.visibility = "visible";
+  hrefButton.style.visibility = "visible";
+  var escaped = escapeUrl(inputURL);
+  var newLink = window.location.origin + "/get_img?url=" + escaped;
+  var outputURL = document.getElementById("outputURL");
+  outputURL.value = newLink;
+}
+
+function resetLink() {
+  document.getElementById("inputURL").value = "";
+  document.getElementById("outputURL").value = "";
+  resetLinkButton.style.visibility = "hidden";
+  selectButton.style.visibility = "hidden";
+  copyButton.style.visibility = "hidden";
+  hrefButton.style.visibility = "hidden";
+  document.getElementById("url-error").style.display = "none";
+  document.getElementById("img-tips").style.display = "none";
+}
+
+  </script>
+  </head>
+  <body>
+    <h1>盗链生成器</h1>
+    <p>请输入要请求的<b> 链接</b>：</p>
+    <input type="text" id="inputURL" placeholder="https://example.com/?a=1&b=2">
+    <button onclick="generateLink()">盗链</button>
+    <button onclick="generateImg()">盗图</button>
+    <button id="resetLinkButton" onclick="resetLink()" style="visibility: hidden;">重置</button>
+    <br>
+    <span id="url-error" style="color: red; font-weight: bold; display: none;">*此项必填</span>
+    <p>生成的链接：
+      <button id="selectButton" onclick="document.getElementById('outputURL').select();" style="visibility: hidden;">全选</button>
+      <button id="copyButton" onclick="document.getElementById('selectButton').click();document.execCommand('copy');alert('链接已复制：\n'+document.getElementById('outputURL').value);" style="visibility: hidden;">复制</button>
+      <button id="hrefButton" onclick="window.open(document.getElementById('outputURL').value);" style="visibility: hidden;">访问</button>
+    </p>
+    <textarea placeholder="https://api.hnest.eu.org/get_api?url=" id="outputURL" rows="5" cols="50"></textarea>
+    <br>
+    <span id="img-tips" style="color: gray; font-weight: bold; display: none;">*默认图片识别为jpg格式，跟随后缀！<br>（可手动指定&type=图片格式）</span>
+    <br>
+    <br>
+    <br>
+    <button onclick="window.location.href='/readme'">←返回主页</button>
+  </body>
+</html>
