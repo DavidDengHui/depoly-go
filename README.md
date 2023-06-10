@@ -1,25 +1,5 @@
-# README
-![](static/logo.jpeg)
+# netlify-go-function-demo [![Netlify Status](https://api.netlify.com/api/v1/badges/a7cd6625-f2c7-4701-b249-c70743234a32/deploy-status)](https://app.netlify.com/sites/go-function-demo/deploys)
 
-Host a simple Go web application in Netlify
+A simple repo to demonstrate how to launch a Go microservice on Netlify using [Netlify functions](https://functions.netlify.com) and URL rewriting.
 
-**Live Preview**
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/575f6c75-113a-4512-879b-2dd4f888547f/deploy-status)](https://app.netlify.com/sites/go-netlify-app/deploys)
-
-## Write a function
-
-The [Netlify docs](https://docs.netlify.com/functions/build-with-go/) for golang are a great starting point.
-
-## Build the binary
-Push code to GitHub and instruct the Netlify CI on how to use the source code to build.
-
-## Deploy to Netlify
-Configure the settings in a `netlify.toml` file in the root of project.
-
-```toml
-[build]
-  command = "${build command}"
-  functions = "functions"
-  publish = "${static html file}"
-```
+[See demo site](https://go-function-demo.netlify.com) and [detailed blog post explanation](https://blog.carlmjohnson.net/post/2020/2020-03-01-how-to-host-golang-on-netlify-for-free/).
