@@ -1,13 +1,7 @@
 [build]
-  command = "./build.sh"
+  command = "make build"
   functions = "functions"
-  publish = "public"
-
+  publish = "site"
 [build.environment]
-  GO_IMPORT_PATH = "github.com/carlmjohnson/netlify-go-function-demo"
-  GO111MODULE = "on"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/gateway/:splat"
-  status = 200
+  # Change this path with the path to your repository
+  GO_IMPORT_PATH = "github.com/netlify/aws-lambda-go-example"
