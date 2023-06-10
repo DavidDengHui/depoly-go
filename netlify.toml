@@ -1,0 +1,3 @@
+[build]
+  command = "go build -o functions/main main.go"
+  functions = "functions"
