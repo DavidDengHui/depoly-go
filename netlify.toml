@@ -31,3 +31,8 @@
   from = "/send_api"
   to = "/.netlify/functions/gateway"
   status = 200
+
+[[redirects]]
+  from = "/github"
+  to = "/.netlify/functions/gateway"
+  status = 200

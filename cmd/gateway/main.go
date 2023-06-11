@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/get_img", getImgHandler)
 	http.HandleFunc("/readme", readmeHandler)
 	http.HandleFunc("/send_api", sendApiHandler)
+	http.HandleFunc("/github", githubHandler)
 	listener := gateway.ListenAndServe
 	portStr := "n/a"
 
@@ -363,4 +364,39 @@ func strEncode(query map[string]string) string {
 	queryStr := strings.Join(pairs, "&")
 	// 返回查询字符串
 	return queryStr
+}
+
+func githubHandler(w http.ResponseWriter, r *http.Request) {
+	// 定义请求的url
+	url := "https://api.github.com/repos/DavidDengHui/HNest/dispatches"
+	// 定义请求的标头
+	header := map[string]string{
+			"Authorization": "token ghp",
+	}
+	// 定义请求发送的主题信息
+	payload := map[string]string{
+			"event_type": "github",
+	}
+	// 将主题信息转换为json格式的字节切片
+	json_data, err := json.Marshal(payload)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	// 向url发送post请求，设置标头为header，请求的数据为json_data
+	resp, err := http.Post(url, "application/json", ioutil.NopCloser(bytes.NewReader(json_data)))
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	defer resp.Body.Close()
+	
+// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+for k, v := range header {
+	resp.Header.Set(k, v)
+}
+
+    // 读取响应的状态码，并输出到页面上
+    status := resp.StatusCode
+    w.Write([]byte(fmt.Sprintf("Status code: %d", status)))
 }
