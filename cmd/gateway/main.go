@@ -240,7 +240,7 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 
 func readmeHandler(w http.ResponseWriter, r *http.Request) {
 	// 获取/index.html页面渲染到屏幕
-	tmpl, err := template.ParseFiles("index.html")
+	tmpl, err := template.ParseFiles("/index.html")
 	if err != nil {
 			fmt.Println(err)
 			return

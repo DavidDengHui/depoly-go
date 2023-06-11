@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API</title>
+  <link rel="shortcut icon" href="https://hnest.eu.org/favicon.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no"> 
+  <script>
+
+    function url_encode() {
+      var input = document.getElementById("url_input").value;
+      var output = encodeURIComponent(input);
+      document.getElementById("url_output").value = output;
+    }
+    
+    function url_decode() {
+      var input = document.getElementById("url_input").value;
+      var output = decodeURIComponent(input);
+      document.getElementById("url_output").value = output;
+    }
+    
+    function url_jiaohuan() {
+      var k = document.getElementById("url_input").value;
+      document.getElementById("url_input").value = document.getElementById("url_output").value;
+      document.getElementById("url_output").value = k;
+    }
+    
+    function url_chongzhi() {
+      document.getElementById("url_input").value = "";
+      document.getElementById("url_output").value = "";
+    }
+    
+      </script>
+  <script>
+
+var base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+function base64encode(str) {
+  var bytes = [];
+  for (var i = 0; i < str.length; i++) {
+    bytes.push(str.charCodeAt(i));
+  }
+  var result = "";
+  for (var i = 0; i < bytes.length; i += 3) {
+    var b1 = bytes[i];
+    var b2 = bytes[i + 1] || 0;
+    var b3 = bytes[i + 2] || 0;
+    var bin = (b1 << 16) | (b2 << 8) | b3;
+    var c1 = (bin >> 18) & 63;
+    var c2 = (bin >> 12) & 63;
+    var c3 = (bin >> 6) & 63;
+    var c4 = bin & 63;
+    var r1 = base64chars.charAt(c1);
+    var r2 = base64chars.charAt(c2);
+    var r3 = base64chars.charAt(c3);
+    var r4 = base64chars.charAt(c4);
+    if (i + 1 >= bytes.length) {
+      r3 = "=";
+      r4 = "=";
+    }
+    if (i + 2 >= bytes.length) {
+      r4 = "=";
+    }
+    result += r1 + r2 + r3 + r4;
+  }
+  return result;
+}
+
+function base64decode(str) {
+  var data = atob(str);
+  var result = "";
+  for (var i = 0; i < data.length; i++) {
+    var code = data.charCodeAt(i);
+    result += String.fromCharCode(code);
+  }
+  return result;
+}
+
+function encode() {
+  var input = document.getElementById("input").value;
+  var output = base64encode(input);
+  document.getElementById("output").value = output;
+}
+
+function decode() {
+  var input = document.getElementById("input").value;
+  var output = base64decode(input);
+  document.getElementById("output").value = output;
+}
+
+function jiaohuan() {
+  var k = document.getElementById("input").value;
+  document.getElementById("input").value = document.getElementById("output").value;
+  document.getElementById("output").value = k;
+}
+
+function chongzhi() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").value = "";
+}
+
+  </script>
+</head>
+<body>
+  <h1>Hello, Python!</h1>
+  <h2>This is a API: 
+    <a href='/api/bili' title='Myself API'>https://api2.hnest.eu.org/api/bili</a>
+  </h2>
+  <br>
+  <h1><a href="https://qiye.aliyun.com/alimail/" title="阿里云企业邮箱" target="_blank">阿里云企业邮箱</a></h1>
+  <br>
+  <h1><a href="https://www.office.com/?auth=2" title="Microsoft 365" target="_blank">Microsoft 365</a></h1>
+  <br>
+  <h1><a href="/get" title="盗链生成器 WebAPI">盗链生成器</a></h1>
+  <br>
+  <h1><a href="/send" title="数据发送器 WebHook">数据发送器</a></h1>
+  <br>
+  <h1>URL 编码和解码</h1>
+  <p>请输入要编码或解码的内容：</p>
+  <textarea id="url_input" rows="5" cols="50"></textarea>
+  <p>点击下面的按钮进行编码或解码：</p>
+  <button onclick="url_encode()">编码</button>
+    <button onclick="url_jiaohuan()">交🔄换</button> 
+   <button onclick="url_chongzhi()">重🗑️置</button>  
+  <button onclick="url_decode()">解码</button>
+  <p>输出结果如下：</p>
+  <textarea id="url_output" rows="5" cols="50"></textarea>
+  <br>
+  <h1>Base64 编码和解码</h1>
+  <p>请输入要编码或解码的内容：</p>
+  <textarea id="input" rows="5" cols="50"></textarea>
+  <p>点击下面的按钮进行编码或解码：</p>
+  <button onclick="encode()">编码</button>
+    <button onclick="jiaohuan()">交🔄换</button> 
+   <button onclick="chongzhi()">重🗑️置</button>  
+  <button onclick="decode()">解码</button>
+  <p>输出结果如下：</p>
+  <textarea id="output" rows="5" cols="50" readonly></textarea>
+</body>
+</html>
