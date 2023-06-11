@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/apex/gateway"
@@ -276,17 +277,25 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err)
 					return
 			}
-			resp, err = http.Post(url, "application/json", ioutil.NopCloser(bytes.NewReader(json_data)))
+			// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
+			req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
 			if err != nil {
-					fmt.Println(err)
-					return
+				fmt.Println(err)
+				return
+			}
+			// 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+			for k, v := range convertMap(header) {
+				req.Header.Set(k, v)
+			}
+			// 创建一个http.Client对象
+			client := &http.Client{}
+			// 使用http.Client.Do方法发送请求，并获取响应
+			resp, err := client.Do(req)
+			if err != nil {
+				fmt.Println(err)
+				return
 			}
 			defer resp.Body.Close()
-			
-			// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-			for k, v := range header {
-				resp.Header.Set(k, fmt.Sprint(v))
-			}
 			
 	} else {
 			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
@@ -345,6 +354,37 @@ func jsonToMap(s string) map[string]interface{} {
 			return nil
 	}
 	return m
+}
+
+// 定义一个函数，将map[string]interface{}类型转换为map[string]string类型
+func convertMap(m map[string]interface{}) map[string]string {
+	// 定义一个新的map[string]string类型的变量
+	n := make(map[string]string)
+
+	// 遍历原来的map，对每个键值对进行转换
+	for k, v := range m {
+		// 判断值的类型，使用不同的方法转换为字符串
+		switch v := v.(type) {
+		case string:
+			// 如果是字符串，直接赋值
+			n[k] = v
+		case int:
+			// 如果是整数，使用strconv.Itoa转换为字符串
+			n[k] = strconv.Itoa(v)
+		case bool:
+			// 如果是布尔值，使用strconv.FormatBool转换为字符串
+			n[k] = strconv.FormatBool(v)
+		case float64:
+			// 如果是浮点数，使用strconv.FormatFloat转换为字符串
+			n[k] = strconv.FormatFloat(v, 'f', -1, 64)
+		default:
+			// 如果是其他类型，使用fmt.Sprint转换为字符串
+			n[k] = fmt.Sprint(v)
+		}
+	}
+
+	// 返回新的map
+	return n
 }
 
 func strEncode(query map[string]string) string {
