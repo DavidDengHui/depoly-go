@@ -373,7 +373,7 @@ func githubHandler(w http.ResponseWriter, r *http.Request) {
 	header := map[string]string{
 			"Authorization": "token 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",
 	}
-	// 定义请求发送的主题信息
+	// 定义请求发送的主体信息
 	payload := map[string]string{
 			"event_type": "github",
 	}
@@ -404,7 +404,13 @@ if err != nil {
 }
 defer resp.Body.Close()
 
-    // 读取响应的状态码，并输出到页面上
+    // 读取响应的状态码和数据，并输出到页面上
     status := resp.StatusCode
-    w.Write([]byte(fmt.Sprintf("Status code: %d", status)))
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    data := string(body)
+    w.Write([]byte(fmt.Sprintf("Status code: %d\nData: %s", status, data)))
 }
