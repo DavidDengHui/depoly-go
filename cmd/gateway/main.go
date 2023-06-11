@@ -30,7 +30,6 @@ func main() {
 	http.HandleFunc("/get_img", getImgHandler)
 	http.HandleFunc("/readme", readmeHandler)
 	http.HandleFunc("/send_api", sendApiHandler)
-	http.HandleFunc("/github", githubHandler)
 	listener := gateway.ListenAndServe
 	portStr := "n/a"
 
@@ -404,53 +403,4 @@ func strEncode(query map[string]string) string {
 	queryStr := strings.Join(pairs, "&")
 	// 返回查询字符串
 	return queryStr
-}
-
-func githubHandler(w http.ResponseWriter, r *http.Request) {
-	// 定义请求的url
-	url := "https://api.github.com/repos/DavidDengHui/HNest/dispatches"
-	// 定义请求的标头
-	header := map[string]string{
-			"Authorization": "token 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",
-	}
-	// 定义请求发送的主体信息
-	payload := map[string]string{
-			"event_type": "github",
-	}
-	// 将主题信息转换为json格式的字节切片
-	json_data, err := json.Marshal(payload)
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
-	
-// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
-req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
-if err != nil {
-	fmt.Println(err)
-	return
-}
-// 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-for k, v := range header {
-	req.Header.Set(k, v)
-}
-// 创建一个http.Client对象
-client := &http.Client{}
-// 使用http.Client.Do方法发送请求，并获取响应
-resp, err := client.Do(req)
-if err != nil {
-	fmt.Println(err)
-	return
-}
-defer resp.Body.Close()
-
-    // 读取响应的状态码和数据，并输出到页面上
-    status := resp.StatusCode
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    data := string(body)
-    w.Write([]byte(fmt.Sprintf("Status code: %d\nData: %s", status, data)))
 }
