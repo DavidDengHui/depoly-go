@@ -264,6 +264,15 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
       return
   }
 	status_data["doit"] = string(s)
+	w.Header().Set("Content-Type", "application/json")
+	json_data, err := json.Marshal(status_data)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Write(json_data)
+	return
+	
 
 	// 如果url有值，根据type的方式向url发送请求，携带header和send_data，并返回响应数据
 	if url != "" {
