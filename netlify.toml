@@ -26,3 +26,8 @@
   from = "/readme"
   to = "/.netlify/functions/gateway"
   status = 200
+
+[[redirects]]
+  from = "/send_api"
+  to = "/.netlify/functions/gateway"
+  status = 200
