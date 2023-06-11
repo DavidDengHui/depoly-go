@@ -282,28 +282,33 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			defer resp.Body.Close()
 			
-	// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-	for k, v := range header {
-		resp.Header.Set(k, fmt.Sprint(v))
-	}
+			// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+			for k, v := range header {
+				resp.Header.Set(k, fmt.Sprint(v))
+			}
 			
 	} else {
-	// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
-	query := make(map[string]string)
-	for k, v := range send_data {
-		query[k] = fmt.Sprint(v)
-	}
-	resp, err = http.Get(url + "?" + strEncode(query))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-		defer resp.Body.Close()
-	
-		// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-		for k, v := range header {
-			resp.Header.Set(k, fmt.Sprint(v))
-		}
+			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
+			query := make(map[string]string)
+			for k, v := range send_data {
+				query[k] = fmt.Sprint(v)
+			}
+			// 判断url中是否包含?字符，有则使用&连接，否则使用?连接
+			if strings.Contains(url, "?") {
+				resp, err = http.Get(url + "&" + strEncode(query))
+			} else {
+				resp, err = http.Get(url + "?" + strEncode(query))
+			}
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			defer resp.Body.Close()
+			
+			// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+			for k, v := range header {
+				resp.Header.Set(k, fmt.Sprint(v))
+			}
 	
 	}
 
