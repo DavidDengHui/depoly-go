@@ -195,17 +195,18 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 	// 再判断type是否有值，没有则将type赋值为"jpg"
 	if typ == "" {
 			typ = "jpg"
-	}
-	// 再继续判断url结尾如果有.字符，则将从.之后开始到非字母结束的部分赋值给type，将filename中.字符及以后的部分删除
-	if strings.Contains(filename, ".") {
-			re := regexp.MustCompile(`\.[a-zA-Z]+`)
-			match := re.FindString(filename)
-			if match != "" {
-					typ = match[1:]
-					// filename = strings.TrimSuffix(filename, match)
-					filename = filename[:strings.Index(filename, ".")]
+			// 再继续判断url结尾如果有.字符，则将从.之后开始到非字母结束的部分赋值给type，将filename中.字符及以后的部分删除
+			if strings.Contains(filename, ".") {
+					re := regexp.MustCompile(`\.[a-zA-Z]+`)
+					match := re.FindString(filename)
+					if match != "" {
+							typ = match[1:]
+							// filename = strings.TrimSuffix(filename, match)
+							filename = filename[:strings.Index(filename, ".")]
+					}
 			}
 	}
+
 
 
 	// status_data["callback"] = fmt.Sprintf("url:[%d] | type:[%d] | filename:[%d]", url, typ, filename)
