@@ -383,18 +383,26 @@ func githubHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 	}
-	// 向url发送post请求，设置标头为header，请求的数据为json_data
-	resp, err := http.Post(url, "application/json", ioutil.NopCloser(bytes.NewReader(json_data)))
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
-	defer resp.Body.Close()
 	
-// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-for k, v := range header {
-	resp.Header.Set(k, v)
+// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
+req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
+if err != nil {
+	fmt.Println(err)
+	return
 }
+// 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+for k, v := range header {
+	req.Header.Set(k, v)
+}
+// 创建一个http.Client对象
+client := &http.Client{}
+// 使用http.Client.Do方法发送请求，并获取响应
+resp, err := client.Do(req)
+if err != nil {
+	fmt.Println(err)
+	return
+}
+defer resp.Body.Close()
 
     // 读取响应的状态码，并输出到页面上
     status := resp.StatusCode
