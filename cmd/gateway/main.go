@@ -371,7 +371,7 @@ func githubHandler(w http.ResponseWriter, r *http.Request) {
 	url := "https://api.github.com/repos/DavidDengHui/HNest/dispatches"
 	// 定义请求的标头
 	header := map[string]string{
-			"Authorization": "token ghp",
+			"Authorization": "token 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",
 	}
 	// 定义请求发送的主题信息
 	payload := map[string]string{
