@@ -87,12 +87,29 @@ func getApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// 最后再判断变量url是否有值
 	if url != "" {
-			// 有则输出json数据{"status":"success"}
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(`{"status":"success"}`))
+      // 有则向该url发送get请求
+      resp, err := http.Get(url)
+      if err != nil {
+          fmt.Println(err)
+          return
+      }
+      defer resp.Body.Close()
+      // 如果请求成功了直接输出返回的数据
+      if resp.StatusCode == http.StatusOK {
+          body, err := ioutil.ReadAll(resp.Body)
+          if err != nil {
+              fmt.Println(err)
+              return
+          }
+          w.Write(body)
+      } else {
+          // 否则输出json数据{"status":"error","code":"1002","doit":"获取到的url值","callback":"INVALID_URL_加请求状态"}
+          w.Header().Set("Content-Type", "application/json")
+          w.Write([]byte(fmt.Sprintf(`{"status":"error","code":"1002","doit":"%d","callback":"INVALID_URL_%d"}`, url, resp.StatusCode)))
+      }
 	} else {
 			// 否则输出json数据{"status":"error"}
 			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(`{"status":"error"}`))
+			w.Write([]byte(`{"status":"error","code":"1001","doit":"NO_URL","callback":"INVALID_HOOK"}`))
 	}
 }
