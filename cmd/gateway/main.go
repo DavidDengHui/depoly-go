@@ -103,7 +103,7 @@ func getApiHandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 					w.Header().Set("Content-Type", "application/json")
 					status_data["code"] = "1002"
-					status_data["callback"] = fmt.Sprintf("INVALID_URL_%d", err)
+					status_data["callback"] = fmt.Sprintf("INVALID_URL_%d", fmt.Println(err))
 					json_data, err := json.Marshal(status_data)
 					if err != nil {
 							fmt.Println(err)
