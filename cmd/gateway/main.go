@@ -202,7 +202,8 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 			match := re.FindString(filename)
 			if match != "" {
 					typ = match[1:]
-					filename = strings.TrimSuffix(filename, match)
+					// filename = strings.TrimSuffix(filename, match)
+					filename = filename[:strings.Index(filename, ".")]
 			}
 	}
 
