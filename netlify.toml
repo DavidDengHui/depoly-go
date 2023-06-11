@@ -21,3 +21,8 @@
   from = "/get_img"
   to = "/.netlify/functions/gateway"
   status = 200
+
+[[redirects]]
+  from = "/readme"
+  to = "/.netlify/functions/gateway"
+  status = 200

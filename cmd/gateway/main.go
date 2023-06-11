@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"regexp"
 	"strings"
+	"html/template"
 
 	"github.com/apex/gateway"
 )
@@ -26,6 +27,7 @@ func main() {
 	http.HandleFunc("/api/bili", bili)
 	http.HandleFunc("/get_api", getApiHandler)
 	http.HandleFunc("/get_img", getImgHandler)
+	http.HandleFunc("/readme", readmeHandler)
 	listener := gateway.ListenAndServe
 	portStr := "n/a"
 
@@ -206,9 +208,6 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 					}
 			}
 	}
-
-
-
 	// status_data["callback"] = fmt.Sprintf("url:[%d] | type:[%d] | filename:[%d]", url, typ, filename)
 	// w.Header().Set("Content-Type", "application/json")
 	// json_data, err := json.Marshal(status_data)
@@ -218,7 +217,6 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 	// }
 	// w.Write(json_data)
 	// return
-
 	// 然后向url发送get请求，将返回的图片显示到屏幕上，mimetype为image/type，设置ctrl+s保存图片时名字为filename.type
 	resp, err := http.Get(url)
 	if err != nil {
@@ -229,13 +227,27 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 	
 	w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
 	
-// 设置ctrl+s保存图片时名字为filename.type
-w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=%s.%s", filename, typ))
+	// 设置ctrl+s保存图片时名字为filename.type
+	w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=%s.%s", filename, typ))
 
-body, err := ioutil.ReadAll(resp.Body)
-if err != nil {
-	fmt.Println(err)
-	return
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	w.Write(body)
 }
-w.Write(body)
+
+func readmeHandler(w http.ResponseWriter, r *http.Request) {
+	// 获取/index.html页面渲染到屏幕
+	tmpl, err := template.ParseFiles("index.html")
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
 }
