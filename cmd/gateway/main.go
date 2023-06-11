@@ -205,7 +205,18 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 					filename = strings.TrimSuffix(filename, match)
 			}
 	}
-	
+
+
+	status_data["callback"] = fmt.Sprintf("url:[%d] | type:[%d] | filename:[%d]", url, typ, filename)
+	w.Header().Set("Content-Type", "application/json")
+	json_data, err := json.Marshal(status_data)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	w.Write(json_data)
+	return
+
 	// 然后向url发送get请求，将返回的图片显示到屏幕上，mimetype为image/type，设置ctrl+s保存图片时名字为filename.type
 	resp, err := http.Get(url)
 	if err != nil {
