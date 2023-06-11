@@ -18,7 +18,6 @@ var (
 func main() {
 	flag.Parse()
 
-	http.HandleFunc("/api/feed", feed)
 	http.HandleFunc("/api/bili", bili)
 	http.HandleFunc("/api/get_api", getApiHandler)
 	listener := gateway.ListenAndServe
