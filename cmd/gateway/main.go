@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -263,7 +265,62 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 			"data":    send_data,
 	}
 
+	// 根据type的方式向url发送请求，携带header和send_data，并返回响应数据
+	var resp *http.Response
+	var err error
+	if typ == "POST" {
+			// 如果type是post，使用http.Post方法发送请求，将send_data转换为json格式的字节切片作为body参数
+			json_data, err := json.Marshal(send_data)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+			resp, err = http.Post(url, "application/json", ioutil.NopCloser(bytes.NewReader(json_data)))
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+			defer resp.Body.Close()
+			
+	// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+	for k, v := range header {
+		resp.Header.Set(k, fmt.Sprint(v))
+	}
+			
+	} else {
+	// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
+	query := make(map[string]string)
+	for k, v := range send_data {
+		query[k] = fmt.Sprint(v)
+	}
+	resp, err = http.Get(url + "?" + strEncode(query))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+		defer resp.Body.Close()
 	
+		// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+		for k, v := range header {
+			resp.Header.Set(k, fmt.Sprint(v))
+		}
+	
+	}
+
+	
+	// 读取响应的body数据，并将其赋值给status_data["callback"]
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+			fmt.Println(err)
+			return
+	}
+	status_data["callback"] = string(body)
+	
+	// 设置status_data["status"]为"success"，status_data["code"]为"1101-响应状态码"
+	status_data["status"] = "success"
+	status_data["code"] = fmt.Sprintf("1101-%d", resp.StatusCode)
+	
+	// 将status_data转换为json数据并返回
 	json_data, err := json.Marshal(status_data)
 	if err != nil {
 			fmt.Println(err)
@@ -271,73 +328,6 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(json_data)
-	return
-
-
-	
-	// // 根据type的方式向url发送请求，携带header和send_data，并返回响应数据
-	// var resp *http.Response
-	// var err error
-	// if typ == "POST" {
-	// 		// 如果type是post，使用http.Post方法发送请求，将send_data转换为json格式的字节切片作为body参数
-	// 		json_data, err := json.Marshal(send_data)
-	// 		if err != nil {
-	// 				fmt.Println(err)
-	// 				return
-	// 		}
-	// 		resp, err = http.Post(url, "application/json", ioutil.NopCloser(bytes.NewReader(json_data)))
-	// 		if err != nil {
-	// 				fmt.Println(err)
-	// 				return
-	// 		}
-	// 		defer resp.Body.Close()
-			
-	// // 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-	// for k, v := range header {
-	// 	resp.Header.Set(k, fmt.Sprint(v))
-	// }
-			
-	// } else {
-	// // 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
-	// query := make(url.Values)
-	// for k, v := range send_data {
-	// 	query.Set(k, fmt.Sprint(v))
-	// }
-	// resp, err = http.Get(url + "?" + query.Encode())
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// 	defer resp.Body.Close()
-	
-	// 	// 设置请求的header，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-	// 	for k, v := range header {
-	// 		resp.Header.Set(k, fmt.Sprint(v))
-	// 	}
-	
-	// }
-
-	
-	// // 读取响应的body数据，并将其赋值给status_data["callback"]
-	// body, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// }
-	// status_data["callback"] = string(body)
-	
-	// // 设置status_data["status"]为"success"，status_data["code"]为"1101-响应状态码"
-	// status_data["status"] = "success"
-	// status_data["code"] = fmt.Sprintf("1101-%d", resp.StatusCode)
-	
-	// // 将status_data转换为json数据并返回
-	// json_data, err := json.Marshal(status_data)
-	// if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// }
-	// w.Header().Set("Content-Type", "application/json")
-	// w.Write(json_data)
 }
 
 // 定义一个辅助函数，将json格式的字符串转换为map类型
@@ -349,4 +339,23 @@ func jsonToMap(s string) map[string]interface{} {
 			return nil
 	}
 	return m
+}
+
+func strEncode(query map[string]string) string {
+	// 定义一个字符串切片，用于存储编码后的键值对
+	var pairs []string
+	// 遍历query变量中的键值对
+	for k, v := range query {
+			// 使用url.QueryEscape函数对键和值进行编码，替换特殊字符为%XX序列
+			k = url.QueryEscape(k)
+			v = url.QueryEscape(v)
+			// 将编码后的键和值用=连接起来，形成一个键值对字符串
+			pair := k + "=" + v
+			// 将键值对字符串追加到字符串切片中
+			pairs = append(pairs, pair)
+	}
+	// 使用strings.Join函数将字符串切片中的元素用&连接起来，形成一个查询字符串
+	queryStr := strings.Join(pairs, "&")
+	// 返回查询字符串
+	return queryStr
 }
