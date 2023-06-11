@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	http.HandleFunc("/api/bili", bili)
-	http.HandleFunc("/api/get_api", getApiHandler)
+	http.HandleFunc("/get_api", getApiHandler)
 	listener := gateway.ListenAndServe
 	portStr := "n/a"
 

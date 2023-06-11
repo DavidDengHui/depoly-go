@@ -11,3 +11,8 @@
   from = "/api/*"
   to = "/.netlify/functions/gateway/:splat"
   status = 200
+
+[[redirects]]
+  from = "/get_api"
+  to = "/.netlify/functions/gateway"
+  status = 200
