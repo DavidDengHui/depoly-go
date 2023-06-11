@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"regexp"
 	"strings"
-	"html/template"
 
 	"github.com/apex/gateway"
 )
@@ -239,15 +238,6 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func readmeHandler(w http.ResponseWriter, r *http.Request) {
-	// 获取/index.html页面渲染到屏幕
-	tmpl, err := template.ParseFiles("/index.html")
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
+	// 重定向页面到/
+	http.Redirect(w, r, "/", http.StatusFound)
 }
