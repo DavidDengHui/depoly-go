@@ -97,15 +97,18 @@ func getApiHandler(w http.ResponseWriter, r *http.Request) {
 	// 最后再判断变量url是否有值
 	if url != "" {
 			// 增加将url值赋给status_data["doit"]
-			status_data["code"] = "1002"
 			status_data["doit"] = url
 			// 有则向该url发送get请求
 			resp, err := http.Get(url)
 			if err != nil {
 					w.Header().Set("Content-Type", "application/json")
-					status_data["code"] = "1003"
+					status_data["code"] = "1002"
 					status_data["callback"] = fmt.Sprintf("INVALID_URL_%d", err)
-					json_data := json.Marshal(status_data)
+					json_data, err := json.Marshal(status_data)
+					if err != nil {
+							fmt.Println(err)
+							return
+					}
 					w.Write(json_data)
 					return
 			}
@@ -121,6 +124,7 @@ func getApiHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 					// 否则输出json数据{"status":"error","code":"1002","doit":"获取到的url值","callback":"INVALID_URL_加请求状态"}
 					w.Header().Set("Content-Type", "application/json")
+					status_data["code"] = "1003"
 					status_data["callback"] = fmt.Sprintf("INVALID_URL_%d", resp.StatusCode)
 					json_data, err := json.Marshal(status_data)
 					if err != nil {
