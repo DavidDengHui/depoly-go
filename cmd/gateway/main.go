@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/apex/gateway"
@@ -276,8 +275,6 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err)
 					return
 			}
-			// w.Write([]byte(fmt.Sprintf("Header: [%s]\nData: [%s]", header, send_data)))
-			// w.Write([]byte(fmt.Sprintf("\nconvertMap(header): [%s]\njson.Marshal(send_data): [%s]", convertMap(header), json_data)))
 			// return
 			// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
 			req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
@@ -306,8 +303,11 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 					return
 			}
 			data := string(body)
-			w.Write([]byte(fmt.Sprintf("Status code: [%d]\nData: [%s]", status, data)))
-			return
+			// 设置status_data["status"]为"success"，status_data["code"]为"1102-响应状态码"
+			status_data["status"] = "success"
+			status_data["code"] = fmt.Sprintf("1102-%d", status)
+			// 读取响应的body数据，并将其赋值给status_data["callback"]
+			status_data["callback"] = data
 	} else {
 			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
 			query := make(map[string]string)
@@ -325,21 +325,18 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer resp.Body.Close()
-	
+			// 读取响应的body数据，并将其赋值给status_data["callback"]
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+			status_data["callback"] = string(body)
+			
+			// 设置status_data["status"]为"success"，status_data["code"]为"1101-响应状态码"
+			status_data["status"] = "success"
+			status_data["code"] = fmt.Sprintf("1101-%d", resp.StatusCode)
 	}
-
-	// 读取响应的body数据，并将其赋值给status_data["callback"]
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
-	status_data["callback"] = string(body)
-	
-	// 设置status_data["status"]为"success"，status_data["code"]为"1101-响应状态码"
-	status_data["status"] = "success"
-	status_data["code"] = fmt.Sprintf("1101-%d", resp.StatusCode)
-	
 	// 将status_data转换为json数据并返回
 	json_data, err := json.Marshal(status_data)
 	if err != nil {
@@ -348,6 +345,7 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(json_data)
+	return
 }
 
 // 定义一个辅助函数，将json格式的字符串转换为map类型
@@ -359,37 +357,6 @@ func jsonToMap(s string) map[string]interface{} {
 			return nil
 	}
 	return m
-}
-
-// 定义一个函数，将map[string]interface{}类型转换为map[string]string类型
-func convertMap(m map[string]interface{}) map[string]string {
-	// 定义一个新的map[string]string类型的变量
-	n := make(map[string]string)
-
-	// 遍历原来的map，对每个键值对进行转换
-	for k, v := range m {
-		// 判断值的类型，使用不同的方法转换为字符串
-		switch v := v.(type) {
-		case string:
-			// 如果是字符串，直接赋值
-			n[k] = v
-		case int:
-			// 如果是整数，使用strconv.Itoa转换为字符串
-			n[k] = strconv.Itoa(v)
-		case bool:
-			// 如果是布尔值，使用strconv.FormatBool转换为字符串
-			n[k] = strconv.FormatBool(v)
-		case float64:
-			// 如果是浮点数，使用strconv.FormatFloat转换为字符串
-			n[k] = strconv.FormatFloat(v, 'f', -1, 64)
-		default:
-			// 如果是其他类型，使用fmt.Sprint转换为字符串
-			n[k] = fmt.Sprint(v)
-		}
-	}
-
-	// 返回新的map
-	return n
 }
 
 func strEncode(query map[string]string) string {
