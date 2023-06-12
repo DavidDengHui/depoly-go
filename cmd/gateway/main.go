@@ -298,7 +298,16 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer resp.Body.Close()
-			
+			// 读取响应的状态码和数据，并输出到页面上
+			status := resp.StatusCode
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+					fmt.Println(err)
+					return
+			}
+			data := string(body)
+			w.Write([]byte(fmt.Sprintf("Status code: %d\nData: %s", status, data)))
+			return
 	} else {
 			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
 			query := make(map[string]string)
