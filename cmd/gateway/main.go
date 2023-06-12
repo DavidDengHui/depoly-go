@@ -54,67 +54,67 @@ func getApiHandler(w http.ResponseWriter, r *http.Request) {
 	url = r.URL.Query().Get("url")
 	// 再判断如果是post方式的请求
 	if r.Method == "POST" {
-			// 则判断请求的body数据中有无url参数
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			var data map[string]string
-			err = json.Unmarshal(body, &data)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			// 如果有则将url参数值覆盖给url
-			if data["url"] != "" {
-					url = data["url"]
-			}
+		// 则判断请求的body数据中有无url参数
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		var data map[string]string
+		err = json.Unmarshal(body, &data)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		// 如果有则将url参数值覆盖给url
+		if data["url"] != "" {
+			url = data["url"]
+		}
 	}
 	// 最后再判断变量url是否有值
 	if url != "" {
-			// 增加将url值赋给status_data["doit"]
-			status_data["doit"] = url
-			// 有则向该url发送get请求
-			resp, err := http.Get(url)
+		// 增加将url值赋给status_data["doit"]
+		status_data["doit"] = url
+		// 有则向该url发送get请求
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer resp.Body.Close()
+		// 如果请求成功了直接输出返回的数据
+		if resp.StatusCode == http.StatusOK {
+			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-					fmt.Println(err)
-					return
+				fmt.Println(err)
+				return
 			}
-			defer resp.Body.Close()
-			// 如果请求成功了直接输出返回的数据
-			if resp.StatusCode == http.StatusOK {
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-							fmt.Println(err)
-							return
-					}
-					w.Write(body)
-			} else {
-					// 否则输出json数据{"status":"error","code":"1002","doit":"获取到的url值","callback":"INVALID_URL_加请求状态"}
-					w.Header().Set("Content-Type", "application/json")
-					status_data["code"] = "1002"
-					status_data["callback"] = fmt.Sprintf("INVALID_URL_%d", resp.StatusCode)
-					json_data, err := json.Marshal(status_data)
-					if err != nil {
-							fmt.Println(err)
-							return
-					}
-					w.Write(json_data)
-			}
-	} else {
-			// 判断变量url没有值时，status_data["doit"]="NO_URL"、status_data["callback"]="INVALID_HOOK"
-			status_data["doit"] = "NO_URL"
-			status_data["callback"] = "INVALID_HOOK"
-			// 然后将数组status_data转换为json数据后输出
+			w.Write(body)
+		} else {
+			// 否则输出json数据{"status":"error","code":"1002","doit":"获取到的url值","callback":"INVALID_URL_加请求状态"}
 			w.Header().Set("Content-Type", "application/json")
+			status_data["code"] = "1002"
+			status_data["callback"] = fmt.Sprintf("INVALID_URL_%d", resp.StatusCode)
 			json_data, err := json.Marshal(status_data)
 			if err != nil {
-					fmt.Println(err)
-					return
+				fmt.Println(err)
+				return
 			}
 			w.Write(json_data)
-	}
+		}
+	} else {
+		// 判断变量url没有值时，status_data["doit"]="NO_URL"、status_data["callback"]="INVALID_HOOK"
+		status_data["doit"] = "NO_URL"
+		status_data["callback"] = "INVALID_HOOK"
+		// 然后将数组status_data转换为json数据后输出
+		w.Header().Set("Content-Type", "application/json")
+        json_data, err := json.Marshal(status_data)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        w.Write(json_data)
+    }
 }
 
 func getImgHandler(w http.ResponseWriter, r *http.Request) {
@@ -133,72 +133,72 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
 	filename = "get_img"
 	// 判断请求方式如果是POST，则将请求body部分中设置的url和type参数值覆盖
 	if r.Method == "POST" {
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			var data map[string]string
-			err = json.Unmarshal(body, &data)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			if data["url"] != "" {
-					url = data["url"]
-			}
-			if data["type"] != "" {
-					typ = data["type"]
-			}
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		var data map[string]string
+		err = json.Unmarshal(body, &data)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if data["url"] != "" {
+			url = data["url"]
+		}
+		if data["type"] != "" {
+			typ = data["type"]
+		}
 	}
 	// 如果没有获取到url值，则status_data["doit"]="NO_URL"、status_data["callback"]="INVALID_HOOK"，将status_data转换为json输出
 	if url == "" {
-			status_data["doit"] = "NO_URL"
-			status_data["callback"] = "INVALID_HOOK"
-			w.Header().Set("Content-Type", "application/json")
-			json_data, err := json.Marshal(status_data)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			w.Write(json_data)
-			return
-	}
-	// 如果获取到url值，则将url中最后一个/字符之后的内容赋值给filename
-	filename = url[strings.LastIndex(url, "/")+1:]
-	// 再判断type是否有值，没有则将type赋值为"jpg"
-	if typ == "" {
-			typ = "jpg"
-			// 再继续判断url结尾如果有.字符，则将从.之后开始到非字母结束的部分赋值给type，将filename中.字符及以后的部分删除
-			if strings.Contains(filename, ".") {
-					re := regexp.MustCompile(`\.[a-zA-Z]+`)
-					match := re.FindString(filename)
-					if match != "" {
-							typ = match[1:]
-							// filename = strings.TrimSuffix(filename, match)
-							filename = filename[:strings.Index(filename, ".")]
-					}
-			}
-	}
-	// 然后向url发送get请求，将返回的图片显示到屏幕上，mimetype为image/type，设置ctrl+s保存图片时名字为filename.type
-	resp, err := http.Get(url)
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
-	defer resp.Body.Close()
-	
-	w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
-	
-	// 设置ctrl+s保存图片时名字为filename.type
-	w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=%s.%s", filename, typ))
+		status_data["doit"] = "NO_URL"
+		status_data["callback"] = "INVALID_HOOK"
+		w.Header().Set("Content-Type", "application/json")
+        json_data, err := json.Marshal(status_data)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        w.Write(json_data)
+        return
+    }
+    // 如果获取到url值，则将url中最后一个/字符之后的内容赋值给filename
+    filename = url[strings.LastIndex(url, "/")+1:]
+    // 再判断type是否有值，没有则将type赋值为"jpg"
+    if typ == "" {
+        typ = "jpg"
+        // 再继续判断url结尾如果有.字符，则将从.之后开始到非字母结束的部分赋值给type，将filename中.字符及以后的部分删除
+        if strings.Contains(filename, ".") {
+            re := regexp.MustCompile(`\.[a-zA-Z]+`)
+            match := re.FindString(filename)
+            if match != "" {
+                typ = match[1:]
+                // filename = strings.TrimSuffix(filename, match)
+                filename = filename[:strings.Index(filename, ".")]
+            }
+        }
+    }
+    // 然后向url发送get请求，将返回的图片显示到屏幕上，mimetype为image/type，设置ctrl+s保存图片时名字为filename.type
+    resp, err := http.Get(url)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	w.Write(body)
+    w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
+
+    // 设置ctrl+s保存图片时名字为filename.type
+    w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=%s.%s", filename, typ))
+
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    w.Write(body)
 }
 
 func readmeHandler(w http.ResponseWriter, r *http.Request) {
@@ -218,134 +218,134 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 	var header, send_data map[string]interface{}
 	// 判断请求方法
 	if r.Method == "GET" {
-			// 从get请求中获取url、type、header、data参数值
-			url = r.URL.Query().Get("url")
-			typ = strings.ToUpper(r.URL.Query().Get("type"))
-			header = jsonToMap(r.URL.Query().Get("header"))
-			send_data = jsonToMap(r.URL.Query().Get("data"))
+		// 从get请求中获取url、type、header、data参数值
+		url = r.URL.Query().Get("url")
+		typ = strings.ToUpper(r.URL.Query().Get("type"))
+		header = jsonToMap(r.URL.Query().Get("header"))
+		send_data = jsonToMap(r.URL.Query().Get("data"))
 	} else if r.Method == "POST" {
-			// 从post请求的body中获取url、type、header、data参数值
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			var data map[string]string
-			err = json.Unmarshal(body, &data)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			url = data["url"]
-			typ = strings.ToUpper(data["type"])
-			header = jsonToMap(data["header"])
-			send_data = jsonToMap(data["data"])
+		// 从post请求的body中获取url、type、header、data参数值
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		var data map[string]string
+		err = json.Unmarshal(body, &data)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		url = data["url"]
+		typ = strings.ToUpper(data["type"])
+		header = jsonToMap(data["header"])
+		send_data = jsonToMap(data["data"])
 	}
 
 	// 判断如果没有获取到url值，则返回错误信息并结束程序
 	if url == "" {
-			status_data["code"] = "1001"
-			status_data["doit"] = "NO_URL"
-			status_data["callback"] = "INVALID_HOOK"
-			json_data, err := json.Marshal(status_data)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(json_data)
-			return
-	}
+		status_data["code"] = "1001"
+		status_data["doit"] = "NO_URL"
+		status_data["callback"] = "INVALID_HOOK"
+        json_data, err := json.Marshal(status_data)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        w.Header().Set("Content-Type", "application/json")
+        w.Write(json_data)
+        return
+    }
 
-	// 将status_data["doit"]赋值为一个多维数组，其中包含"url"键值为url值，"type"键值为type值，"headers"键值为header数组，"data"键值为send_data数组
-	status_data["doit"] = map[string]interface{}{
-			"url":     url,
-			"type":    typ,
-			"headers": header,
-			"data":    send_data,
-	}
+    // 将status_data["doit"]赋值为一个多维数组，其中包含"url"键值为url值，"type"键值为type值，"headers"键值为header数组，"data"键值为send_data数组
+    status_data["doit"] = map[string]interface{}{
+        "url": url,
+        "type": typ,
+        "headers": header,
+        "data": send_data,
+    }
 
-	// 根据type的方式向url发送请求，携带header和send_data，并返回响应数据
-	var resp *http.Response
-	var err error
-	if typ == "POST" {
-			// 如果type是post，使用http.Post方法发送请求，将send_data转换为json格式的字节切片作为body参数
-			json_data, err := json.Marshal(send_data)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			// return
-			// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
-			req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			// 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
-			for k, v := range header {
-				req.Header.Set(k, fmt.Sprint(v))
-			}
-			// 创建一个http.Client对象
-			client := &http.Client{}
-			// 使用http.Client.Do方法发送请求，并获取响应
-			resp, err := client.Do(req)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			defer resp.Body.Close()
-			// 读取响应的状态码和数据，并输出到页面上
-			status := resp.StatusCode
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			data := string(body)
-			// 设置status_data["status"]为"success"，status_data["code"]为"1102-响应状态码"
-			status_data["status"] = "success"
-			status_data["code"] = fmt.Sprintf("1102-%d", status)
-			// 读取响应的body数据，并将其赋值给status_data["callback"]
-			status_data["callback"] = data
-	} else {
-			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
-			query := make(map[string]string)
-			for k, v := range send_data {
-				query[k] = fmt.Sprint(v)
-			}
-			// 判断url中是否包含?字符，有则使用&连接，否则使用?连接
-			if strings.Contains(url, "?") {
-				resp, err = http.Get(url + "&" + strEncode(query))
-			} else {
-				resp, err = http.Get(url + "?" + strEncode(query))
-			}
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			defer resp.Body.Close()
-			// 读取响应的body数据，并将其赋值给status_data["callback"]
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-					fmt.Println(err)
-					return
-			}
-			status_data["callback"] = string(body)
-			
-			// 设置status_data["status"]为"success"，status_data["code"]为"1101-响应状态码"
-			status_data["status"] = "success"
-			status_data["code"] = fmt.Sprintf("1101-%d", resp.StatusCode)
-	}
-	// 将status_data转换为json数据并返回
-	json_data, err := json.Marshal(status_data)
-	if err != nil {
-			fmt.Println(err)
-			return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json_data)
-	return
+    // 根据type的方式向url发送请求，携带header和send_data，并返回响应数据
+    var resp *http.Response
+    var err error
+    if typ == "POST" {
+        // 如果type是post，使用http.Post方法发送请求，将send_data转换为json格式的字节切片作为body参数
+        json_data, err := json.Marshal(send_data)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        // return
+        // 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
+        req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        // 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+        for k, v := range header {
+            req.Header.Set(k, fmt.Sprint(v))
+        }
+        // 创建一个http.Client对象
+        client := &http.Client{}
+        // 使用http.Client.Do方法发送请求，并获取响应
+        resp, err := client.Do(req)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        defer resp.Body.Close()
+        // 读取响应的状态码和数据，并输出到页面上
+        status := resp.StatusCode
+        body, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        data := string(body)
+        // 设置status_data["status"]为"success"，status_data["code"]为"1102-响应状态码"
+        status_data["status"] = "success"
+        status_data["code"] = fmt.Sprintf("1102-%d", status)
+        // 读取响应的body数据，并将其赋值给status_data["callback"]
+        status_data["callback"] = data
+    } else {
+        // 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
+        query := make(map[string]string)
+        for k, v := range send_data {
+            query[k] = fmt.Sprint(v)
+        }
+        // 判断url中是否包含?字符，有则使用&连接，否则使用?连接
+        if strings.Contains(url, "?") {
+            resp, err = http.Get(url + "&" + strEncode(query))
+        } else {
+            resp, err = http.Get(url + "?" + strEncode(query))
+        }
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        defer resp.Body.Close()
+        // 读取响应的body数据，并将其赋值给status_data["callback"]
+        body, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        status_data["callback"] = string(body)
+
+        // 设置status_data["status"]为"success"，status_data["code"]为"1101-响应状态码"
+        status_data["status"] = "success"
+        status_data["code"] = fmt.Sprintf("1101-%d", resp.StatusCode)
+    }
+    // 将status_data转换为json数据并返回
+    json_data, err := json.Marshal(status_data)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(json_data)
+    return
 }
 
 // 定义一个辅助函数，将json格式的字符串转换为map类型
@@ -353,8 +353,8 @@ func jsonToMap(s string) map[string]interface{} {
 	var m map[string]interface{}
 	err := json.Unmarshal([]byte(s), &m)
 	if err != nil {
-			fmt.Println(err)
-			return nil
+		fmt.Println(err)
+		return nil
 	}
 	return m
 }
@@ -364,13 +364,13 @@ func strEncode(query map[string]string) string {
 	var pairs []string
 	// 遍历query变量中的键值对
 	for k, v := range query {
-			// 使用url.QueryEscape函数对键和值进行编码，替换特殊字符为%XX序列
-			k = url.QueryEscape(k)
-			v = url.QueryEscape(v)
-			// 将编码后的键和值用=连接起来，形成一个键值对字符串
-			pair := k + "=" + v
-			// 将键值对字符串追加到字符串切片中
-			pairs = append(pairs, pair)
+		// 使用url.QueryEscape函数对键和值进行编码，替换特殊字符为%XX序列
+		k = url.QueryEscape(k)
+		v = url.QueryEscape(v)
+		// 将编码后的键和值用=连接起来，形成一个键值对字符串
+		pair := k + "=" + v
+		// 将键值对字符串追加到字符串切片中
+		pairs = append(pairs, pair)
 	}
 	// 使用strings.Join函数将字符串切片中的元素用&连接起来，形成一个查询字符串
 	queryStr := strings.Join(pairs, "&")
