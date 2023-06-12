@@ -306,7 +306,7 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 					return
 			}
 			data := string(body)
-			w.Write([]byte(fmt.Sprintf("Status code: %d\nData: %s", status, data)))
+			w.Write([]byte(fmt.Sprintf("Status code: [%d]\nData: [%s]", status, data)))
 			return
 	} else {
 			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
