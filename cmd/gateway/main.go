@@ -276,9 +276,9 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err)
 					return
 			}
-			w.Write([]byte(fmt.Sprintf("Header: [%s]\nData: [%s]", header, send_data)))
-			w.Write([]byte(fmt.Sprintf("convertMap(header): [%s]\njson.Marshal(send_data): [%s]", convertMap(header), json_data)))
-			return
+			// w.Write([]byte(fmt.Sprintf("Header: [%s]\nData: [%s]", header, send_data)))
+			// w.Write([]byte(fmt.Sprintf("\nconvertMap(header): [%s]\njson.Marshal(send_data): [%s]", convertMap(header), json_data)))
+			// return
 			// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
 			req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
 			if err != nil {
@@ -287,8 +287,10 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			// 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
 			for k, v := range convertMap(header) {
+				w.Write([]byte(fmt.Sprintf("k: [%s]\n: [%s]\n", k, v)))
 				req.Header.Set(k, v)
 			}
+			return
 			// 创建一个http.Client对象
 			client := &http.Client{}
 			// 使用http.Client.Do方法发送请求，并获取响应
