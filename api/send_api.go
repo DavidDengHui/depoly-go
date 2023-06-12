@@ -9,7 +9,10 @@ import (
 	"net/url"
 	"strings"
 )
- 
+
+// 定义一个全局数组变量status_data，包含status、code、doit、callback四个键
+var status_data = make(map[string]interface{})
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	status_data["status"] = "error"
