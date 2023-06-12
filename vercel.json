@@ -4,7 +4,7 @@
     "env": {
       "GO_BUILD_FLAGS": "-ldflags '-s -w'"
     },
-    "ignoreCommand": "git diff --quiet $VERCEL_GIT_COMMIT_SHA HEAD ./api"
+    "ignoreCommand": "git diff --quiet $VERCEL_GIT_COMMIT_SHA HEAD ./api ./public"
   },
   "builds": [
     {
