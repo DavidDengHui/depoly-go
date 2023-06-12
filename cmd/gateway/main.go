@@ -270,14 +270,15 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 	var resp *http.Response
 	var err error
 	if typ == "POST" {
+			fmt.Println(send_data)
+			fmt.Println(header)
+			return
 			// 如果type是post，使用http.Post方法发送请求，将send_data转换为json格式的字节切片作为body参数
 			json_data, err := json.Marshal(send_data)
 			if err != nil {
 					fmt.Println(err)
 					return
 			}
-			fmt.Println(json_data)
-			return
 			// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
 			req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
 			if err != nil {
