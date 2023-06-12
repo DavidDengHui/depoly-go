@@ -287,10 +287,8 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			// 设置请求的标头，遍历header变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
 			for k, v := range convertMap(header) {
-				w.Write([]byte(fmt.Sprintf("k: [%s]\n: [%s]\n", k, v)))
 				req.Header.Set(k, v)
 			}
-			return
 			// 创建一个http.Client对象
 			client := &http.Client{}
 			// 使用http.Client.Do方法发送请求，并获取响应
@@ -300,6 +298,16 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer resp.Body.Close()
+			    // 读取响应的状态码和数据，并输出到页面上
+					status := resp.StatusCode
+					body, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+							fmt.Println(err)
+							return
+					}
+					data := string(body)
+					w.Write([]byte(fmt.Sprintf("Status code: %d\nData: %s", status, data)))
+					return
 			
 	} else {
 			// 如果type不是post，默认使用get方法发送请求，将send_data转换为查询字符串作为url参数
