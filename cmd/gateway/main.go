@@ -277,6 +277,7 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 					return
 			}
 			w.Write([]byte(fmt.Sprintf("Header: [%s]\nData: [%s]", header, send_data)))
+			w.Write([]byte(fmt.Sprintf("convertMap(header): [%s]\njson.Marshal(send_data): [%s]", convertMap(header), json_data)))
 			return
 			// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为json_data
 			req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(json_data)))
