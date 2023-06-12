@@ -5,7 +5,9 @@ Host a simple Go web application in Netlify
 
 **Live Preview**
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/46442f41-b1d8-4ff6-b3a0-6ea3b301515b/deploy-status)](https://app.netlify.com/sites/api2-hnest/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/46442f41-b1d8-4ff6-b3a0-6ea3b301515b/deploy-status)](https://app.netlify.com/sites/depoly-go/deploys)
+
+[![Vercel Status](https://vercel.badge.hnest.eu.org/api/daviddenghui/depoly-go)](https://vercel.com/daviddenghui/depoly-go/deployments "Vercel Status")<br>
 
 ## Write a function
 

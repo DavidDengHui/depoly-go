@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+    }
+  },
+  "builds": [
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*.go",
+      "use": "@vercel/go"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/readme",
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/get",
+      "dest": "/public/get.html"
+    },
+    {
+      "src": "/send",
+      "dest": "/public/send.html"
+    },
+    {
+      "src": "/(.*\\..*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/([^.]*)",
+      "dest": "/api/$1.go"
+    }
+  ]
+}
