@@ -5,7 +5,7 @@ Host a simple Go web application in Netlify
 
 **Live Preview**
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/575f6c75-113a-4512-879b-2dd4f888547f/deploy-status)](https://app.netlify.com/sites/go-netlify-app/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/46442f41-b1d8-4ff6-b3a0-6ea3b301515b/deploy-status)](https://app.netlify.com/sites/api2-hnest/deploys)
 
 ## Write a function
 
