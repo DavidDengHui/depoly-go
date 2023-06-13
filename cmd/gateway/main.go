@@ -22,7 +22,7 @@ var (
 	port = flag.Int("port", -1, "specify a port")
 )
 
-func main() {
+func Main() {
 	flag.Parse()
 
 	http.HandleFunc("/get_api", GetApiHandler)
@@ -43,10 +43,10 @@ func main() {
 
 func GetApiHandler(w http.ResponseWriter, r *http.Request) {
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
-	status_data["callback"] = "INVALID_KEY"
-	status_data["doit"] = "NO_KEY"
-	status_data["code"] = "1001"
 	status_data["status"] = "error"
+	status_data["code"] = "1001"
+	status_data["doit"] = "NO_KEY"
+	status_data["callback"] = "INVALID_KEY"
 
 	// 定义一个url变量
 	var url string
@@ -119,10 +119,10 @@ func GetApiHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetImgHandler(w http.ResponseWriter, r *http.Request) {
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
-	status_data["callback"] = "INVALID_KEY"
-	status_data["doit"] = "NO_KEY"
-	status_data["code"] = "1001"
 	status_data["status"] = "error"
+	status_data["code"] = "1001"
+	status_data["doit"] = "NO_KEY"
+	status_data["callback"] = "INVALID_KEY"
 
 	// 设置url、type、filename三个字符串变量
 	var url, typ, filename string
