@@ -25,10 +25,10 @@ var (
 func main() {
 	flag.Parse()
 
-	http.HandleFunc("/get_api", getApiHandler)
-	http.HandleFunc("/get_img", getImgHandler)
-	http.HandleFunc("/readme", readmeHandler)
-	http.HandleFunc("/send_api", sendApiHandler)
+	http.HandleFunc("/get_api", GetApiHandler)
+	http.HandleFunc("/get_img", GetImgHandler)
+	http.HandleFunc("/readme", ReadmeHandler)
+	http.HandleFunc("/send_api", SendApiHandler)
 	listener := gateway.ListenAndServe
 	portStr := "n/a"
 
@@ -41,7 +41,7 @@ func main() {
 	log.Fatal(listener(portStr, nil))
 }
 
-func getApiHandler(w http.ResponseWriter, r *http.Request) {
+func GetApiHandler(w http.ResponseWriter, r *http.Request) {
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["callback"] = "INVALID_KEY"
 	status_data["doit"] = "NO_KEY"
@@ -117,7 +117,7 @@ func getApiHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-func getImgHandler(w http.ResponseWriter, r *http.Request) {
+func GetImgHandler(w http.ResponseWriter, r *http.Request) {
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["callback"] = "INVALID_KEY"
 	status_data["doit"] = "NO_KEY"
@@ -201,12 +201,12 @@ func getImgHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(body)
 }
 
-func readmeHandler(w http.ResponseWriter, r *http.Request) {
+func ReadmeHandler(w http.ResponseWriter, r *http.Request) {
 	// 重定向页面到/
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func sendApiHandler(w http.ResponseWriter, r *http.Request) {
+func SendApiHandler(w http.ResponseWriter, r *http.Request) {
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
@@ -221,8 +221,8 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 		// 从get请求中获取url、type、header、data参数值
 		url = r.URL.Query().Get("url")
 		typ = strings.ToUpper(r.URL.Query().Get("type"))
-		header = jsonToMap(r.URL.Query().Get("header"))
-		send_data = jsonToMap(r.URL.Query().Get("data"))
+		header = JsonToMap(r.URL.Query().Get("header"))
+		send_data = JsonToMap(r.URL.Query().Get("data"))
 	} else if r.Method == "POST" {
 		// 从post请求的body中获取url、type、header、data参数值
 		body, err := ioutil.ReadAll(r.Body)
@@ -238,8 +238,8 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		url = data["url"]
 		typ = strings.ToUpper(data["type"])
-		header = jsonToMap(data["header"])
-		send_data = jsonToMap(data["data"])
+		header = JsonToMap(data["header"])
+		send_data = JsonToMap(data["data"])
 	}
 
 	// 判断如果没有获取到url值，则返回错误信息并结束程序
@@ -316,9 +316,9 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
         }
         // 判断url中是否包含?字符，有则使用&连接，否则使用?连接
         if strings.Contains(url, "?") {
-            resp, err = http.Get(url + "&" + strEncode(query))
+            resp, err = http.Get(url + "&" + StrEncode(query))
         } else {
-            resp, err = http.Get(url + "?" + strEncode(query))
+            resp, err = http.Get(url + "?" + StrEncode(query))
         }
         if err != nil {
             fmt.Println(err)
@@ -349,7 +349,7 @@ func sendApiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // 定义一个辅助函数，将json格式的字符串转换为map类型
-func jsonToMap(s string) map[string]interface{} {
+func JsonToMap(s string) map[string]interface{} {
 	var m map[string]interface{}
 	err := json.Unmarshal([]byte(s), &m)
 	if err != nil {
@@ -359,7 +359,7 @@ func jsonToMap(s string) map[string]interface{} {
 	return m
 }
 
-func strEncode(query map[string]string) string {
+func StrEncode(query map[string]string) string {
 	// 定义一个字符串切片，用于存储编码后的键值对
 	var pairs []string
 	// 遍历query变量中的键值对
