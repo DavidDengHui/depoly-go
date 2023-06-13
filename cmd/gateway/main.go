@@ -22,7 +22,7 @@ var (
 	port = flag.Int("port", -1, "specify a port")
 )
 
-func Main() {
+func main() {
 	flag.Parse()
 
 	http.HandleFunc("/get_api", GetApiHandler)
