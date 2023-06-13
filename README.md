@@ -1,4 +1,4 @@
-# README
+# Some tips about this project
 
 Host a simple Go web application in Netlify and Vercel
 
