@@ -4,10 +4,10 @@ Host a simple Go web application in Netlify and Vercel
 
 **Live Preview**
 
-| **NUM** | **Host** | **Status**                                                                                                                                                     |
-|:-------:|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| **1**   | [Vercel](https://vercel.com/)   | [![Vercel Status](https://vercel.badge.hnest.eu.org/api/daviddenghui/depoly-go)](https://vercel.com/daviddenghui/depoly-go/deployments "Vercel Status")        |
-| **2**   | [Netlify](https://www.netlify.com/)  | [![Netlify Status](https://api.netlify.com/api/v1/badges/46442f41-b1d8-4ff6-b3a0-6ea3b301515b/deploy-status)](https://app.netlify.com/sites/depoly-go/deploys) |
+| **NUM** | **Host** | **Status** | **Preview** |
+|:-------:|:--------:|:----------:|:----------:|
+| **1**   | [Vercel](https://vercel.com/)   | [![Vercel Status](https://vercel.badge.hnest.eu.org/api/daviddenghui/depoly-go)](https://vercel.com/daviddenghui/depoly-go/deployments "Vercel Status")        | <https://api3.hnest.eu.org/> |
+| **2**   | [Netlify](https://www.netlify.com/)  | [![Netlify Status](https://api.netlify.com/api/v1/badges/46442f41-b1d8-4ff6-b3a0-6ea3b301515b/deploy-status)](https://app.netlify.com/sites/depoly-go/deploys) | <https://api2.hnest.eu.org/> |
 
 
 ## Write a function
