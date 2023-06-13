@@ -24,9 +24,8 @@ The shared `static pages directory` is [***/public***](public).
 Push code to GitHub and instruct the `Vercel` and `Netlify` CI on how to use the source code to build.
 
 ## Deploy to Vercel
-Configure the settings in a [***vercel.json***](vercel.json) file in the root of project.
+- Configure the settings in a [***vercel.json***](vercel.json) file in the root of project. <br>For example:
 
-- For example:
 ```yaml
 {
   "version": 2,
@@ -58,6 +57,16 @@ Configure the settings in a [***vercel.json***](vercel.json) file in the root of
 }
 ```
 
+- Configure the settings in a [***.vercelignore***](.vercelignore) file in the root of project. <br>For example:
+
+```shell
+# Golang components used in Netlify build
+build.sh
+.go-version
+go.mod
+go.sum
+```
+
 - You can specify the [*Ignored Build Step*](https://vercel.com/docs/concepts/projects/overview#ignored-build-step) that need to be ignored in the project `Settings -> Git` of `Vercel`. <br>For [example](https://vercel.com/daviddenghui/depoly-go/settings/git), specifying only the submission of `/api` and `/public` folder changes for deployment.
 
 ```shell
@@ -65,9 +74,8 @@ git diff --quiet HEAD^ HEAD ./api ./public
 ```
 
 ## Deploy to Netlify
-Configure the settings in a [***netlify.toml***](netlify.toml) file in the root of project.
+- Configure the settings in a [***netlify.toml***](netlify.toml) file in the root of project. <br>For example:
 
-- For example:
 ```toml
 [build]
   command = "chmod a+x build.sh && ./build.sh"
@@ -83,5 +91,16 @@ Configure the settings in a [***netlify.toml***](netlify.toml) file in the root 
   from = "/api/*"
   to = "/.netlify/functions/gateway/:splat"
   status = 200
+```
 
+- You can customize the `Netlify` build step in the [***build.sh***](build.sh). <br>For example:
+
+```shell
+set -euxo pipefail
+
+mkdir -p "$(pwd)/functions"
+rm -rf "$(pwd)/api"
+GOBIN=$(pwd)/functions go install ./...
+chmod +x "$(pwd)"/functions/*
+go env
 ```
