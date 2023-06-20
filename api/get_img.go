@@ -87,13 +87,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     }
     defer resp.Body.Close()
 
-		if resp.Header.Get("Content-Disposition") != "" {
-			filename = resp.Header.Get("Content-Disposition")
-		}
-		if resp.Header.Get("Content-Type") != "" && !is_input {
-			typ = resp.Header.Get("Content-Type")
-		}
-
     w.Header().Set("Content-Type", fmt.Sprintf("image/%s; charset=utf-8", typ))
 
     // 设置ctrl+s保存图片时名字为filename.type
