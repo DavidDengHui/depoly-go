@@ -1,0 +1,4 @@
+.netlify
+.vercel
+api
+vercel.json

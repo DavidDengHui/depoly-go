@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -11,7 +12,7 @@ import (
 
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// 定义一个全局数组变量status_data，包含status、code、doit、callback四个键
 	var status_data = make(map[string]interface{})
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
@@ -85,6 +86,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     defer resp.Body.Close()
 
 		fmt.Sprintf("url=[%s]\nfilename=[%s]\ntype=[%s]", url, filename, typ)
+		log.Fatal(url)
+		log.Fatal(filename)
+		log.Fatal(typ)
 		return 
 
     w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
