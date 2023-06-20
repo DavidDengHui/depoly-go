@@ -84,6 +84,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     }
     defer resp.Body.Close()
 
+	// 打印 HTTP 状态码
+	fmt.Println("Status:", resp.Status)
+
+	// 打印 HTTP 头部
+	fmt.Println("Headers:", resp.Header)
+
+	// 读取 HTTP 主体
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// 打印 HTTP 主体的长度
+	fmt.Println("Body length:", len(body))
+
+	return
+
     w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
 
     // 设置ctrl+s保存图片时名字为filename.type
