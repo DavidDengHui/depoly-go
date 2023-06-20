@@ -19,6 +19,11 @@
   status = 200
 
 [[redirects]]
+  from = "/get_web"
+  to = "/.netlify/functions/gateway"
+  status = 200
+
+[[redirects]]
   from = "/get_img"
   to = "/.netlify/functions/gateway"
   status = 200
@@ -35,10 +40,5 @@
 
 [[redirects]]
   from = "/github"
-  to = "/.netlify/functions/gateway"
-  status = 200
-
-[[redirects]]
-  from = "/get_web"
   to = "/.netlify/functions/gateway"
   status = 200
