@@ -84,13 +84,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     }
     defer resp.Body.Close()
 
-	// 打印 HTTP 状态码
-	fmt.Println("Status:", resp.Status)
-
-	// 打印 HTTP 头部
-	fmt.Println("Headers:", resp.Header)
-
-	return
+		fmt.Sprintf("url=[%s]\nfilename=[%s]\ntype=[%s]", url, filename, typ)
+		return 
 
     w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
 
