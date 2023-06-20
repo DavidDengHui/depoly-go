@@ -422,6 +422,7 @@ func GetWebHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		resp, err := http.Get(url)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
