@@ -86,9 +86,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     defer resp.Body.Close()
 
 		fmt.Sprintf("url=[%s]\nfilename=[%s]\ntype=[%s]", url, filename, typ)
-		log.Fatal(url)
-		log.Fatal(filename)
-		log.Fatal(typ)
 		return 
 
     w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
