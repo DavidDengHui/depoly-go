@@ -11,7 +11,7 @@ import (
 
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	// 定义一个全局数组变量status_data，包含status、code、doit、callback四个键
 	var status_data = make(map[string]interface{})
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
@@ -22,6 +22,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	// 设置url、type、filename三个字符串变量
 	var url, typ, filename string
+	var is_input bool
+	is_input = true
 	// 从get请求中获取url、type参数值
 	url = r.URL.Query().Get("url")
 	typ = r.URL.Query().Get("type")
@@ -64,6 +66,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     filename = url[strings.LastIndex(url, "/")+1:]
     // 再判断type是否有值，没有则将type赋值为"jpg"
     if typ == "" {
+				is_input = false
         typ = "jpg"
         // 再继续判断url结尾如果有.字符，则将从.之后开始到非字母结束的部分赋值给type，将filename中.字符及以后的部分删除
         if strings.Contains(filename, ".") {
@@ -84,10 +87,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
     }
     defer resp.Body.Close()
 
-		fmt.Sprintf("url=[%s]\nfilename=[%s]\ntype=[%s]", url, filename, typ)
-		return 
+		if resp.Header.Get("Content-Disposition") != "" {
+			filename = resp.Header.Get("Content-Disposition")
+		}
+		if resp.Header.Get("Content-Type") != "" && !is_input {
+			typ = resp.Header.Get("Content-Type")
+		}
 
-    w.Header().Set("Content-Type", fmt.Sprintf("image/%s", typ))
+    w.Header().Set("Content-Type", fmt.Sprintf("image/%s; charset=utf-8", typ))
 
     // 设置ctrl+s保存图片时名字为filename.type
     w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=%s.%s", filename, typ))
