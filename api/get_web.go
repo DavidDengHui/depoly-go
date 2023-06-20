@@ -63,5 +63,4 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		// 将返回的数据直接写入到页面
 		io.Copy(w, resp.Body)
-		
 }
