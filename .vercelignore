@@ -1,4 +1,8 @@
+.netlify
+.vercel
+cmd
 build.sh
 .go-version
 go.mod
 go.sum
+netlify.toml
