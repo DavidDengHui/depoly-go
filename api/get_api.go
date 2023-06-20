@@ -17,7 +17,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	status_data["code"] = "1001"
 	status_data["doit"] = "NO_KEY"
 	status_data["callback"] = "INVALID_KEY"
-
 	// 定义一个url变量
 	var url string
 	// 先获取get请求中设置的url参数赋值给url
