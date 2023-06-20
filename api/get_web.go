@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 )
 
 
@@ -53,5 +54,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+	// 创建一个反向代理对象，指向 https://zh.wikipedia.org
+	proxy := httputil.NewSingleHostReverseProxy(&url.URL{
+		Scheme: "https",
+		Host:   "zh.wikipedia.org",
+	})
+
+			// 修改请求的目标地址为 https://zh.wikipedia.org
+			r.URL.Host = "zh.wikipedia.org"
+			r.URL.Scheme = "https"
+			r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+			r.Host = "zh.wikipedia.org"
+	
+			// 调用反向代理的 ServeHTTP 方法，将请求转发给目标服务器
+			proxy.ServeHTTP(w, r)
 		
 }
