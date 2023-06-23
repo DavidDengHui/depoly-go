@@ -42,3 +42,8 @@
   from = "/github"
   to = "/.netlify/functions/gateway"
   status = 200
+
+[[redirects]]
+  from = "/doit"
+  to = "/.netlify/functions/gateway"
+  status = 200
