@@ -119,24 +119,37 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 							log.Println(err)
 							return
 						}
-						headers := map[string]string{
+						headers := map[string]interface{}{
 							"Accept":        "application/json",
 							"Authorization": fmt.Sprintf("token %s", token),
 							"User-Agent":    username,
 							"Content-Type":  "application/json",
 							"Content-Length": fmt.Sprintf("%d", len(dataJSON)),
 						}
-						response, err := http.Post(url, headers["Content-Type"], bytes.NewReader(dataJSON))
+						// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为dataJSON
+						req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(dataJSON)))
 						if err != nil {
-							log.Println(err)
-							return
+								fmt.Println(err)
+								return
 						}
-						defer response.Body.Close()
+						// 设置请求的标头，遍历headers变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
+						for k, v := range headers {
+								req.Header.Set(k, fmt.Sprint(v))
+						}
+						// 创建一个http.Client对象
+						client := &http.Client{}
+						// 使用http.Client.Do方法发送请求，并获取响应
+						resp, err := client.Do(req)
+						if err != nil {
+								fmt.Println(err)
+								return
+						}
+						defer resp.Body.Close()
 						status_data["callback"] = map[string]interface{}{
 							"url":     url,
 							"data":    data,
 							"headers": headers,
-							"state":   response.StatusCode,
+							"state":   resp.StatusCode,
 						}
 					} else {
 						status_data["status"] = "error"
