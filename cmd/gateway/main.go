@@ -236,14 +236,14 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						state := r.URL.Query().Get("state")
 						page_url := r.URL.Query().Get("url")
 						if r.Method == "POST" {
-							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]:[%s]", token, hookName, state, page_url, PayLoad))
-							return
 							if vaule, ok := PayLoad["deployment_status"].(map[string]interface{})["state"]; ok {
 								state = vaule.(string)
 							}
 							if vaule, ok := PayLoad["deployment_status"].(map[string]interface{})["environment_url"]; ok {
 								page_url = vaule.(string)
 							}
+							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]:[%s]", token, hookName, state, page_url, PayLoad))
+							return
 						}
 						if state == "success" {
 							status_data["status"] = "success"
