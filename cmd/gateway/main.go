@@ -86,87 +86,87 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 					path := "/x/web-interface/"
 					typ := "popular"
 					if r.URL.Query().Get("type") != "" {
-							switch r.URL.Query().Get("type") {
-							case "rank":
-									typ = "ranking/v2?rid=0&type=all"
-							case "rank01":
-									path = "/pgc/web/rank/"
-									typ = "list?day=3&season_type=1"
-							case "rank02":
-									path = "/pgc/season/rank/web/"
-									typ = "list?day=3&season_type=4"
-							case "rank03":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=168&type=all"
-							case "rank04":
-									path = "/pgc/season/rank/web/"
-									typ = "list?day=3&season_type=3"
-							case "rank05":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=1&type=all"
-							case "rank06":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=3&type=all"
-							case "rank07":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=129&type=all"
-							case "rank08":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=4&type=all"
-							case "rank09":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=36&type=all"
-							case "rank10":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=188&type=all"
-							case "rank11":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=234&type=all"
-							case "rank12":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=223&type=all"
-							case "rank13":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=160&type=all"
-							case "rank14":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=211&type=all"
-							case "rank15":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=217&type=all"
-							case "rank16":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=119&type=all"
-							case "rank17":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=155&type=all"
-							case "rank18":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=5&type=all"
-							case "rank19":
-									path = "/x/web-interface/ranking/"
-									typ = "v2?rid=181&type=all"
-							case "rank20":
-								path = "/pgc/season/rank/web/"
-								typ = "list?day=3&season_type=2"
-							case "rank21":
-								path = "/pgc/season/rank/web/"
-								typ = "list?day=3&season_type=5"
-							case "rank22":
-								path = "/pgc/season/rank/web/"
-								typ = "list?day=3&season_type=7"
-							case "rank23":
-								path = "/x/web-interface/ranking/"
-								typ = "v2?rid=0&type=origin"
-							case "rank24":
-								path = "/x/web-interface/ranking/"
-								typ = "v2?rid=0&type=rookie"
-								break
-							default:
-								path = "/x/web-interface/"
-								typ = "popular"
-								break
-							}
+						switch r.URL.Query().Get("type") {
+						case "rank":
+							typ = "ranking/v2?rid=0&type=all"
+						case "rank01":
+							path = "/pgc/web/rank/"
+							typ = "list?day=3&season_type=1"
+						case "rank02":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=4"
+						case "rank03":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=168&type=all"
+						case "rank04":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=3"
+						case "rank05":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=1&type=all"
+						case "rank06":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=3&type=all"
+						case "rank07":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=129&type=all"
+						case "rank08":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=4&type=all"
+						case "rank09":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=36&type=all"
+						case "rank10":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=188&type=all"
+						case "rank11":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=234&type=all"
+						case "rank12":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=223&type=all"
+						case "rank13":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=160&type=all"
+						case "rank14":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=211&type=all"
+						case "rank15":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=217&type=all"
+						case "rank16":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=119&type=all"
+						case "rank17":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=155&type=all"
+						case "rank18":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=5&type=all"
+						case "rank19":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=181&type=all"
+						case "rank20":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=2"
+						case "rank21":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=5"
+						case "rank22":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=7"
+						case "rank23":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=0&type=origin"
+						case "rank24":
+							path = "/x/web-interface/ranking/"
+							typ = "av2?rid=0&type=rookie"
+							break
+						default:
+							path = "/x/web-interface/"
+							typ = "popular"
+							break
+						}
 					} else {
 						if r.URL.Query().Get("ps") != "" {
 								typ += "?ps=" + r.URL.Query().Get("ps")
@@ -177,11 +177,26 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 								}
 						}
 					}
-					url := fmt.Sprintf("https://%s%s%s", api, path, typ) // added code
+					url := fmt.Sprintf("https://%s%s%s", api, path, typ)
+					resp, err := http.Get(url)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+					if resp.StatusCode == http.StatusOK {
+						body, err := ioutil.ReadAll(resp.Body)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
+						status_data["callback"] = body
+					} else {
+						status_data["callback"] = fmt.Sprintf("%s[%d]", hookName, resp.StatusCode)
+					}
 					status_data["status"] = "success"
 					status_data["code"] = "1101"
 					status_data["doit"] = url
-					status_data["callback"] = hookName
 				} else {
 					status_data["code"] = "1004"
 					status_data["doit"] = token + " | " + hookName
