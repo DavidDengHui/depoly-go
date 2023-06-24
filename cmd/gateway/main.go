@@ -160,7 +160,7 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 							typ = "v2?rid=0&type=origin"
 						case "rank24":
 							path = "/x/web-interface/ranking/"
-							typ = "av2?rid=0&type=rookie"
+							typ = "v2?rid=0&type=rookie"
 							break
 						default:
 							path = "/x/web-interface/"
@@ -185,12 +185,18 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					defer resp.Body.Close()
 					if resp.StatusCode == http.StatusOK {
-						body, err := ioutil.ReadAll(resp.Body)
+						get_data, err := ioutil.ReadAll(resp.Body)
 						if err != nil {
 							fmt.Println(err)
 							return
 						}
-						status_data["callback"] = body
+						data_json := make(map[string]interface{})
+						err = json.Unmarshal(get_data, &data_json)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
+						status_data["callback"] = data_json
 					} else {
 						status_data["callback"] = fmt.Sprintf("%s[%d]", hookName, resp.StatusCode)
 					}
