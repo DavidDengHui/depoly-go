@@ -298,8 +298,7 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						} else {
 							status_data["callback"] = fmt.Sprintf("[state]%s", state)
 						}
-					}
-					if hookName == "push_hooks" {
+					} else if hookName == "push_hooks" {
 						status_data["status"] = "success"
 						status_data["code"] = "1104"
 						status_data["doit"] = token + " | " + hookName
