@@ -19,21 +19,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	status_data["code"] = "1001"
 	status_data["doit"] = "NO_KEY"
 	status_data["callback"] = "INVALID_KEY"
-
 	token := r.URL.Query().Get("token")
 	if token == "" {
 		token = "Z2hwX01PZDNidlo3aGRJbUpUTDJzQWR3V1VXNDRxZnBDdDBVWUhpNw=="
 	}
 	hookName := r.URL.Query().Get("hook_name")
+	var PayLoad map[string]interface{}
 	if r.Method == "POST" {
-		var temp map[string]interface{}
-		err := json.NewDecoder(r.Body).Decode(&temp)
+		err := json.NewDecoder(r.Body).Decode(&PayLoad)
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
 			return
 		}
-		token = ToList(temp)["password"]
-		hookName = ToList(temp)["hook_name"]
+		if vaule, ok := PayLoad["password"]; ok {
+			token = vaule.(string)
+		}
+		if vaule, ok := PayLoad["hook_name"]; ok {
+			hookName = vaule.(string)
+		}
 	}
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
@@ -42,10 +45,129 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		if token == "get_info" {
 			if hookName != "" {
 				if hookName == "bilibili" {
-					status_data["status"] = "success"
-					status_data["code"] = "1101"
-					status_data["doit"] = "https://api2.hnest.eu.org/get_api?url=https://api.bilibili.com/x/web-interface/popular?ps=1&pn=1"
-					status_data["callback"] = hookName
+					api := "api.bilibili.com"
+					path := "/x/web-interface/"
+					typ := "popular"
+					if r.URL.Query().Get("type") != "" {
+						switch r.URL.Query().Get("type") {
+						case "rank":
+							typ = "ranking/v2?rid=0&type=all"
+						case "rank01":
+							path = "/pgc/web/rank/"
+							typ = "list?day=3&season_type=1"
+						case "rank02":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=4"
+						case "rank03":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=168&type=all"
+						case "rank04":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=3"
+						case "rank05":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=1&type=all"
+						case "rank06":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=3&type=all"
+						case "rank07":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=129&type=all"
+						case "rank08":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=4&type=all"
+						case "rank09":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=36&type=all"
+						case "rank10":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=188&type=all"
+						case "rank11":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=234&type=all"
+						case "rank12":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=223&type=all"
+						case "rank13":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=160&type=all"
+						case "rank14":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=211&type=all"
+						case "rank15":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=217&type=all"
+						case "rank16":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=119&type=all"
+						case "rank17":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=155&type=all"
+						case "rank18":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=5&type=all"
+						case "rank19":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=181&type=all"
+						case "rank20":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=2"
+						case "rank21":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=5"
+						case "rank22":
+							path = "/pgc/season/rank/web/"
+							typ = "list?day=3&season_type=7"
+						case "rank23":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=0&type=origin"
+						case "rank24":
+							path = "/x/web-interface/ranking/"
+							typ = "v2?rid=0&type=rookie"
+							break
+						default:
+							path = "/x/web-interface/"
+							typ = "popular"
+							break
+						}
+					} else {
+						if r.URL.Query().Get("ps") != "" {
+								typ += "?ps=" + r.URL.Query().Get("ps")
+								if r.URL.Query().Get("pn") != "" {
+										typ += "&pn=" + r.URL.Query().Get("pn")
+								} else {
+										typ += "&pn=1"
+								}
+						}
+					}
+					url := fmt.Sprintf("https://%s%s%s", api, path, typ)
+					status_data["doit"] = url
+					resp, err := http.Get(url)
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+					defer resp.Body.Close()
+					if resp.StatusCode == http.StatusOK {
+						get_data, err := ioutil.ReadAll(resp.Body)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
+						data_json := make(map[string]interface{})
+						err = json.Unmarshal(get_data, &data_json)
+						if err != nil {
+							fmt.Println(err)
+							return
+						}
+						status_data["callback"] = data_json
+						status_data["code"] = "1101"
+						status_data["status"] = "success"
+					} else {
+						status_data["callback"] = fmt.Sprintf("%s[%d]", hookName, resp.StatusCode)
+						status_data["code"] = "1010"
+						status_data["status"] = "error"
+					}
 				} else {
 					status_data["code"] = "1004"
 					status_data["doit"] = token + " | " + hookName
@@ -65,7 +187,80 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				token = string(tokenBytes)
 				if hookName != "" {
-					if hookName == "push_hooks" {
+					if hookName == "deployment_status" {
+						status_data["code"] = "1009"
+						status_data["doit"] = fmt.Sprintf("%s | %s", token, hookName)
+						username := r.URL.Query().Get("username")
+						repopath := r.URL.Query().Get("repopath")
+						reponame := r.URL.Query().Get("reponame")
+						state := r.URL.Query().Get("state")
+						page_url := r.URL.Query().Get("url")
+						if r.Method == "POST" {
+							if vaule, ok := PayLoad["deployment_status"].(map[string]interface{})["state"]; ok {
+								state = vaule.(string)
+							}
+							if vaule, ok := PayLoad["deployment_status"].(map[string]interface{})["environment_url"]; ok {
+								page_url = vaule.(string)
+							}
+						}
+						if state == "success" {
+							status_data["status"] = "success"
+							status_data["code"] = "1103"
+							url := fmt.Sprintf("https://api.github.com/repos/%s/%s/commits/master", repopath, reponame)
+							response, err := http.Get(url)
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+							defer response.Body.Close()
+							var data map[string]interface{}
+							err = json.NewDecoder(response.Body).Decode(&data)
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+							sha := data["sha"].(string)
+							commitMsg := data["commit"].(map[string]interface{})["message"].(string)
+							url = fmt.Sprintf("https://api.github.com/repos/%s/%s/commits/%s/comments", repopath, reponame, sha)
+							headers := map[string]interface{}{
+								"Content-Type":    "application/json",
+								"Authorization": fmt.Sprintf("token %s", token),
+								"User-Agent":    username,
+							}
+							SendData := map[string]string{
+								"body" : fmt.Sprintf("# Successfully deployed with \n > %s\n## Following the Pages URL:\n### [%s](%s)", commitMsg, page_url, page_url),
+							}
+							dataJSON, err := json.Marshal(SendData)
+							if err != nil {
+								log.Println(err)
+								return
+							}
+							req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(dataJSON)))
+							if err != nil {
+									fmt.Println(err)
+									return
+							}
+							for k, v := range headers {
+									req.Header.Set(k, fmt.Sprint(v))
+							}
+							client := &http.Client{}
+							resp, err := client.Do(req)
+							if err != nil {
+									fmt.Println(err)
+									return
+							}
+							defer resp.Body.Close()
+							var callback map[string]interface{}
+							err = json.NewDecoder(resp.Body).Decode(&callback)
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+							status_data["callback"] = callback
+						} else {
+							status_data["callback"] = fmt.Sprintf("[state]%s", state)
+						}
+					} else if hookName == "push_hooks" {
 						status_data["status"] = "success"
 						status_data["code"] = "1104"
 						status_data["doit"] = token + " | " + hookName
@@ -86,19 +281,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 							"Content-Type":  "application/json",
 							"Content-Length": fmt.Sprintf("%d", len(dataJSON)),
 						}
-						// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为dataJSON
 						req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(dataJSON)))
 						if err != nil {
 								fmt.Println(err)
 								return
 						}
-						// 设置请求的标头，遍历headers变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
 						for k, v := range headers {
 								req.Header.Set(k, fmt.Sprint(v))
 						}
-						// 创建一个http.Client对象
 						client := &http.Client{}
-						// 使用http.Client.Do方法发送请求，并获取响应
 						resp, err := client.Do(req)
 						if err != nil {
 								fmt.Println(err)
@@ -132,12 +323,4 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 	}
 	w.Write(json_data)
-}
-
-func ToList(cont map[string]interface{}) map[string]string {
-	result := make(map[string]string)
-	for key, value := range cont {
-		result[key] = fmt.Sprintf("%v", value)
-	}
-	return result
 }
