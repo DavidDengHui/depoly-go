@@ -81,8 +81,6 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
 	}
-	fmt.Fprintf(w, "123")
-	return
 	if token != "" {
 		if token == "get_info" {
 			if hookName != "" {
@@ -230,6 +228,8 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 				token = string(tokenBytes)
 				if hookName != "" {
 					if hookName == "deployment_status" {
+						fmt.Fprintf(w, fmt.Sprintf("%s | %s", token, hookName))
+						return
 						status_data["code"] = "1009"
 						status_data["doit"] = fmt.Sprintf("%s | %s", token, hookName)
 						username := r.URL.Query().Get("username")
