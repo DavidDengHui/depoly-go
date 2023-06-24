@@ -68,21 +68,17 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(fmt.Sprintf("1001:%s", err))
 			return
 		}
 		var data map[string]string
 		err = json.Unmarshal(body, &data)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println(fmt.Sprintf("1002:%s", err))
 			return
 		}
-		if data["password"] != "" {
 			token = data["password"]
-		}
-		if data["hook_name"] != "" {
 			hookName = data["hook_name"]
-		}
 	}
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
