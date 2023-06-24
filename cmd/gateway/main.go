@@ -228,8 +228,6 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 				token = string(tokenBytes)
 				if hookName != "" {
 					if hookName == "deployment_status" {
-						fmt.Fprintf(w, fmt.Sprintf("%s | %s", token, hookName))
-						return
 						status_data["code"] = "1009"
 						status_data["doit"] = fmt.Sprintf("%s | %s", token, hookName)
 						username := r.URL.Query().Get("username")
@@ -245,6 +243,8 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 							}
 							state = temp["deployment_status"].(map[string]interface{})["state"].(string)
 						}
+						fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]", token, hookName, state))
+						return
 						if state == "success" {
 							status_data["status"] = "success"
 							status_data["code"] = "1103"
