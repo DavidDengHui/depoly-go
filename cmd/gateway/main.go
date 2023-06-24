@@ -46,14 +46,6 @@ func main() {
 	log.Fatal(listener(portStr, nil))
 }
 
-func ToList(cont map[string]interface{}) map[string]string {
-	result := make(map[string]string)
-	for key, value := range cont {
-		result[key] = fmt.Sprintf("%v", value)
-	}
-	return result
-}
-
 func DoitHandler(w http.ResponseWriter, r *http.Request) {
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
