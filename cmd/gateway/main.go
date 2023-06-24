@@ -75,6 +75,8 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 		token = ToList(temp)["password"]
 		hookName = ToList(temp)["hook_name"]
 		output := map[string]interface{} {
+			"r.Body": r.Body,
+			"temp": temp,
 			"token": token,
 			"hookName": hookName,
 		}
