@@ -238,10 +238,10 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						if r.Method == "POST" {
 							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]:[%s]", token, hookName, state, page_url, PayLoad))
 							return
-							if vaule, ok := temp["deployment_status"].(map[string]interface{})["state"]; ok {
+							if vaule, ok := PayLoad["deployment_status"].(map[string]interface{})["state"]; ok {
 								state = vaule.(string)
 							}
-							if vaule, ok := temp["deployment_status"].(map[string]interface{})["environment_url"]; ok {
+							if vaule, ok := PayLoad["deployment_status"].(map[string]interface{})["environment_url"]; ok {
 								page_url = vaule.(string)
 							}
 						}
