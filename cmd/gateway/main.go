@@ -72,17 +72,17 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		// if value, ok := temp["password"]; ok {
-		// 	fmt.Println("The key 'password' exists and its value is", value)
-		// }
+		// token = temp["password"].(string)
 		// token = ToList(temp)["password"]
 		// hookName = ToList(temp)["hook_name"]
 		output := map[string]interface{} {
 			// "token": temp["password"].(string),
 			// "hookName": temp["hook_name"].(string),
-			"state": temp["deployment_status"].(map[string]interface{})["state"],
+			"state": temp["deployment_status"].(map[string]interface{})["state"].(string),
 			"page_type": temp["deployment_status"].(map[string]interface{})["environment"].(string),
 			"page_url": temp["deployment_status"].(map[string]interface{})["environment_url"].(string),
+			"token": token,
+			"hookName": hookName,
 		}
 		json_data, err := json.Marshal(output)
 		if err != nil {
