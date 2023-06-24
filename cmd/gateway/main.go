@@ -72,12 +72,8 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		if ToList(temp)["password"] != "" {
-			token = ToList(temp)["password"] 
-		}
-		if ToList(temp)["hook_name"] != "" {
-			hookName = ToList(temp)["hook_name"]
-		}
+		fmt.Println(temp)
+		return
 	}
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
