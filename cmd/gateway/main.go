@@ -77,8 +77,10 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(fmt.Sprintf("1002:%s", err))
 			return
 		}
-			token = data["password"]
-			hookName = data["hook_name"]
+			// token = data["password"]
+			// hookName = data["hook_name"]
+			fmt.Println("end")
+			return 
 	}
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
