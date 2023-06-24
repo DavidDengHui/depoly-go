@@ -234,23 +234,26 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						repopath := r.URL.Query().Get("repopath")
 						reponame := r.URL.Query().Get("reponame")
 						state := r.URL.Query().Get("state")
+						page_url := r.URL.Query().Get("url")
 						if r.Method == "POST" {
+							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]", token, hookName, state, page_url))
+							return
 							var temp map[string]interface{}
 							err := json.NewDecoder(r.Body).Decode(&temp)
 							if err != nil {
-								log.Println(err)
+								fmt.Println(err)
 								return
 							}
 							if vaule, ok := temp["deployment_status"].(map[string]interface{})["state"]; ok {
 								state = vaule.(string)
 							}
+							if vaule, ok := temp["deployment_status"].(map[string]interface{})["environment_url"]; ok {
+								page_url = vaule.(string)
+							}
 						}
-						fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]", token, hookName, state))
-						return
 						if state == "success" {
 							status_data["status"] = "success"
 							status_data["code"] = "1103"
-							page_url := r.URL.Query().Get("url")
 							url := fmt.Sprintf("https://api.github.com/repos/%s/%s/commits/master", repopath, reponame)
 							response, err := http.Get(url)
 							if err != nil {
