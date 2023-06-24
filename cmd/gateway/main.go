@@ -236,14 +236,14 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						state := r.URL.Query().Get("state")
 						page_url := r.URL.Query().Get("url")
 						if r.Method == "POST" {
-							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]", token, hookName, state, page_url))
-							return
 							var temp map[string]interface{}
 							err := json.NewDecoder(r.Body).Decode(&temp)
 							if err != nil {
 								fmt.Println(err)
 								return
 							}
+							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]:[%s]", token, hookName, state, page_url, temp))
+							return
 							if vaule, ok := temp["deployment_status"].(map[string]interface{})["state"]; ok {
 								state = vaule.(string)
 							}
