@@ -69,11 +69,15 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 		var temp map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&temp)
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
 			return
 		}
-		token = ToList(temp)["password"]
-		hookName = ToList(temp)["hook_name"]
+		if temp["password"].(string) != "" {
+			token = temp["password"].(string)
+		}
+		if temp["hook_name"].(string) != "" {
+			hookName = temp["hook_name"].(string)
+		}
 	}
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
