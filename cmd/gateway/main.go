@@ -59,7 +59,6 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 	status_data["code"] = "1001"
 	status_data["doit"] = "NO_KEY"
 	status_data["callback"] = "INVALID_KEY"
-
 	token := r.URL.Query().Get("token")
 	if token == "" {
 		token = "Z2hwX01PZDNidlo3aGRJbUpUTDJzQWR3V1VXNDRxZnBDdDBVWUhpNw=="
@@ -82,6 +81,8 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
 	}
+	fmt.Fprintf(w, "123")
+	return
 	if token != "" {
 		if token == "get_info" {
 			if hookName != "" {
