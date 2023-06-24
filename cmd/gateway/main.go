@@ -241,7 +241,9 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 								log.Println(err)
 								return
 							}
-							state = temp["deployment_status"].(map[string]interface{})["state"].(string)
+							if vaule, ok := temp["deployment_status"].(map[string]interface{})["state"]; ok {
+								state = vaule.(string)
+							}
 						}
 						fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]", token, hookName, state))
 						return
