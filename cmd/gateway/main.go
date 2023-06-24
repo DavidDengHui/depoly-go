@@ -78,24 +78,6 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 		if vaule, ok := temp["hook_name"]; ok {
 			hookName = vaule.(string)
 		}
-		// token = temp["password"].(string)
-		// hookName = temp["hook_name"].(string)
-		output := map[string]interface{} {
-			// "token": temp["password"].(string),
-			// "hookName": temp["hook_name"].(string),
-			"state": temp["deployment_status"].(map[string]interface{})["state"].(string),
-			"page_type": temp["deployment_status"].(map[string]interface{})["environment"].(string),
-			"page_url": temp["deployment_status"].(map[string]interface{})["environment_url"].(string),
-			"token": token,
-			"hookName": hookName,
-		}
-		json_data, err := json.Marshal(output)
-		if err != nil {
-				fmt.Println(err)
-				return
-		}
-		w.Write(json_data)
-		return
 	}
 	if r.Header.Get("HTTP_X_GITHUB_EVENT") != "" {
 		hookName = r.Header.Get("HTTP_X_GITHUB_EVENT")
