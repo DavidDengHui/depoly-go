@@ -289,7 +289,7 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 							}
 							defer resp.Body.Close()
 							var callback map[string]interface{}
-							err = json.NewDecoder(response.Body).Decode(&callback)
+							err = json.NewDecoder(resp.Body).Decode(&callback)
 							if err != nil {
 								fmt.Println(err)
 								return
