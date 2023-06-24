@@ -72,13 +72,15 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		token = ToList(temp)["password"]
-		hookName = ToList(temp)["hook_name"]
+		// token = ToList(temp)["password"]
+		// hookName = ToList(temp)["hook_name"]
 		output := map[string]interface{} {
 			"r.Body": r.Body,
-			"temp": temp,
-			"token": token,
-			"hookName": hookName,
+			"token": temp["password"].(string),
+			"hookName": temp["hook_name"].(string),
+			"state": temp["deployment_status"].(map[string]interface{})["state"].(string),
+			"page_type": temp["deployment_status"].(map[string]interface{})["environment"].(string),
+			"page_url": temp["deployment_status"].(map[string]interface{})["environment_url"].(string),
 		}
 		json_data, err := json.Marshal(output)
 		if err != nil {
