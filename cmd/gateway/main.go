@@ -72,9 +72,14 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
+		if vaule, ok := temp["password"]; ok {
+			token = vaule.(string)
+		}
+		if vaule, ok := temp["hook_name"]; ok {
+			hookName = vaule.(string)
+		}
 		// token = temp["password"].(string)
-		// token = ToList(temp)["password"]
-		// hookName = ToList(temp)["hook_name"]
+		// hookName = temp["hook_name"].(string)
 		output := map[string]interface{} {
 			// "token": temp["password"].(string),
 			// "hookName": temp["hook_name"].(string),
