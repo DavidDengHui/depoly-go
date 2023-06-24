@@ -64,17 +64,17 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 		token = "Z2hwX01PZDNidlo3aGRJbUpUTDJzQWR3V1VXNDRxZnBDdDBVWUhpNw=="
 	}
 	hookName := r.URL.Query().Get("hook_name")
+	var PayLoad map[string]interface{}
 	if r.Method == "POST" {
-		var temp map[string]interface{}
-		err := json.NewDecoder(r.Body).Decode(&temp)
+		err := json.NewDecoder(r.Body).Decode(&PayLoad)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		if vaule, ok := temp["password"]; ok {
+		if vaule, ok := PayLoad["password"]; ok {
 			token = vaule.(string)
 		}
-		if vaule, ok := temp["hook_name"]; ok {
+		if vaule, ok := PayLoad["hook_name"]; ok {
 			hookName = vaule.(string)
 		}
 	}
@@ -236,13 +236,7 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						state := r.URL.Query().Get("state")
 						page_url := r.URL.Query().Get("url")
 						if r.Method == "POST" {
-							var temp map[string]interface{}
-							err := json.NewDecoder(r.Body).Decode(&temp)
-							if err != nil {
-								fmt.Println(err)
-								return
-							}
-							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]:[%s]", token, hookName, state, page_url, temp))
+							fmt.Fprintf(w, fmt.Sprintf("%s|%s[%s]->[%s]:[%s]", token, hookName, state, page_url, PayLoad))
 							return
 							if vaule, ok := temp["deployment_status"].(map[string]interface{})["state"]; ok {
 								state = vaule.(string)
