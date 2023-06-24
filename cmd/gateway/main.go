@@ -178,6 +178,7 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 						}
 					}
 					url := fmt.Sprintf("https://%s%s%s", api, path, typ)
+					status_data["doit"] = url
 					resp, err := http.Get(url)
 					if err != nil {
 						fmt.Println(err)
@@ -197,12 +198,13 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 						status_data["callback"] = data_json
+						status_data["code"] = "1101"
+						status_data["status"] = "success"
 					} else {
 						status_data["callback"] = fmt.Sprintf("%s[%d]", hookName, resp.StatusCode)
+						status_data["code"] = "1010"
+						status_data["status"] = "error"
 					}
-					status_data["status"] = "success"
-					status_data["code"] = "1101"
-					status_data["doit"] = url
 				} else {
 					status_data["code"] = "1004"
 					status_data["doit"] = token + " | " + hookName
@@ -222,6 +224,81 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				token = string(tokenBytes)
 				if hookName != "" {
+					if hookName == "deployment_status" {
+						status_data["code"] = "1009"
+						status_data["doit"] = fmt.Sprintf("%s | %s", token, hookName)
+						username := r.URL.Query().Get("username")
+						repopath := r.URL.Query().Get("repopath")
+						reponame := r.URL.Query().Get("reponame")
+						state := r.URL.Query().Get("state")
+						if r.Method == "POST" {
+							var temp map[string]interface{}
+							err := json.NewDecoder(r.Body).Decode(&temp)
+							if err != nil {
+								log.Println(err)
+								return
+							}
+							state = temp["deployment_status"].(map[string]interface{})["state"].(string)
+						}
+						if state == "success" {
+							status_data["status"] = "success"
+							status_data["code"] = "1103"
+							page_url := r.URL.Query().Get("url")
+							url := fmt.Sprintf("https://api.github.com/repos/%s/%s/commits/master", repopath, reponame)
+							response, err := http.Get(url)
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+							defer response.Body.Close()
+							var data map[string]interface{}
+							err = json.NewDecoder(response.Body).Decode(&data)
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+							sha := data["sha"].(string)
+							commitMsg := data["commit"].(map[string]interface{})["message"].(string)
+							url = fmt.Sprintf("https://api.github.com/repos/%s/%s/commits/%s/comments", repopath, reponame, sha)
+							headers := map[string]interface{}{
+								"Content-Type":    "application/json",
+								"Authorization": fmt.Sprintf("token %s", token),
+								"User-Agent":    username,
+							}
+							SendData := map[string]string{
+								"body" : fmt.Sprintf("# Successfully deployed with \n > %s\n## Following the Pages URL:\n### [%s](%s)", commitMsg, page_url, page_url),
+							}
+							dataJSON, err := json.Marshal(SendData)
+							if err != nil {
+								log.Println(err)
+								return
+							}
+							req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(dataJSON)))
+							if err != nil {
+									fmt.Println(err)
+									return
+							}
+							for k, v := range headers {
+									req.Header.Set(k, fmt.Sprint(v))
+							}
+							client := &http.Client{}
+							resp, err := client.Do(req)
+							if err != nil {
+									fmt.Println(err)
+									return
+							}
+							defer resp.Body.Close()
+							var callback map[string]interface{}
+							err = json.NewDecoder(response.Body).Decode(&callback)
+							if err != nil {
+								fmt.Println(err)
+								return
+							}
+							status_data["callback"] = callback
+						} else {
+							status_data["callback"] = fmt.Sprintf("[state]%s", state)
+						}
+					}
 					if hookName == "push_hooks" {
 						status_data["status"] = "success"
 						status_data["code"] = "1104"
@@ -243,19 +320,15 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 							"Content-Type":  "application/json",
 							"Content-Length": fmt.Sprintf("%d", len(dataJSON)),
 						}
-						// 创建一个自定义的请求对象，设置请求方法为post，请求的url为url，请求的数据为dataJSON
 						req, err := http.NewRequest("POST", url, ioutil.NopCloser(bytes.NewReader(dataJSON)))
 						if err != nil {
 								fmt.Println(err)
 								return
 						}
-						// 设置请求的标头，遍历headers变量中的键值对，使用http.Header.Set方法设置对应的头部字段和值
 						for k, v := range headers {
 								req.Header.Set(k, fmt.Sprint(v))
 						}
-						// 创建一个http.Client对象
 						client := &http.Client{}
-						// 使用http.Client.Do方法发送请求，并获取响应
 						resp, err := client.Do(req)
 						if err != nil {
 								fmt.Println(err)
