@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@netlify/build": "29.12.1"
+  }
+}
