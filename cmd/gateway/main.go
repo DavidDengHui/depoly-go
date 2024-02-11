@@ -424,12 +424,12 @@ func GetApiHandler(w http.ResponseWriter, r *http.Request) {
 		status_data["callback"] = "INVALID_HOOK"
 		// 然后将数组status_data转换为json数据后输出
 		w.Header().Set("Content-Type", "application/json")
-    json_data, err := json.Marshal(status_data)
-      if err != nil {
-    	  fmt.Println(err)
-        return
-      }
-      w.Write(json_data)
+        json_data, err := json.Marshal(status_data)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        w.Write(json_data)
     }
 }
 
