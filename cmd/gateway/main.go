@@ -358,7 +358,6 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetApiHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
