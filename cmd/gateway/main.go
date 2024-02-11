@@ -47,6 +47,7 @@ func main() {
 }
 
 func DoitHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
 	status_data["doit"] = "NO_KEY"
@@ -358,6 +359,7 @@ func DoitHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetApiHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
@@ -424,16 +426,17 @@ func GetApiHandler(w http.ResponseWriter, r *http.Request) {
 		status_data["callback"] = "INVALID_HOOK"
 		// 然后将数组status_data转换为json数据后输出
 		w.Header().Set("Content-Type", "application/json")
-        json_data, err := json.Marshal(status_data)
-        if err != nil {
-            fmt.Println(err)
-            return
-        }
-        w.Write(json_data)
+    json_data, err := json.Marshal(status_data)
+      if err != nil {
+    	  fmt.Println(err)
+        return
+      }
+      w.Write(json_data)
     }
 }
 
 func GetImgHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
@@ -518,11 +521,13 @@ func GetImgHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReadmeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// 重定向页面到/
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func SendApiHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
@@ -695,6 +700,7 @@ func StrEncode(query map[string]string) string {
 }
 
 func GetWebHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// 初始化status_data["status"]="error"、status_data["code"]="1001"、status_data["doit"]="NO_KEY"、status_data["callback"]="INVALID_KEY"
 	status_data["status"] = "error"
 	status_data["code"] = "1001"
