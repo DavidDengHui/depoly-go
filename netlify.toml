@@ -2,7 +2,7 @@
   command = "chmod a+x build.sh && ./build.sh"
   functions = "functions"
   publish = "public"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./cmd ./public netlify.toml build.sh go.mod go.sum .go-version"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./cmd ./public netlify.toml build.sh go.mod go.sum .go-version package.json"
 
 [build.environment]
   GO_IMPORT_PATH = "github.com/DavidDengHui/depoly-go"
